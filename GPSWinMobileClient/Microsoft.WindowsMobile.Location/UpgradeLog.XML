@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Gps">
+</Property><Property Name="Файл решения" Value="C:\Program Files (x86)\Windows Mobile 6 SDK\Samples\PocketPC\CS\GPS\Gps.sln">
+</Property><Property Name="Date" Value="6 марта 2013 г.">
+</Property><Property Name="Time" Value="22:32">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="Gps.sln" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\Gps.sln">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\GpsSample.csproj" Description="Успешно создана резервная копия файла проекта: D:\VS2008\VCProjects\Gps sample\Backup\GpsSample\GpsSample.csproj">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\Form1.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GpsSample\Form1.cs">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\Properties\AssemblyInfo.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GpsSample\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\Properties\Resources.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GpsSample\Properties\Resources.cs">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\Form1.resx" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GpsSample\Form1.resx">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\Properties\Resources.resx" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GpsSample\Properties\Resources.resx">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\GpsSample.csproj" Description="Проект успешно преобразован">
+</Event><Event ErrorLevel="3" Project="GpsSample" Source="GpsSample\GpsSample.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="Microsoft.WindowsMobile.Samples.Location.csproj" Description="Успешно создана резервная копия файла проекта: D:\VS2008\VCProjects\Gps sample\Backup\Microsoft.WindowsMobile.Samples.Location.csproj">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="DegreesMinutesSeconds.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\DegreesMinutesSeconds.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="DeviceStateChangedEventArgs.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\DeviceStateChangedEventArgs.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="GPS.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GPS.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="GpsDeviceState.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GpsDeviceState.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="GpsPosition.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\GpsPosition.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="LocationChangedEventArgs.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\LocationChangedEventArgs.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="Properties\AssemblyInfo.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="Utils.cs" Description="Успешно создана резервная копия файла D:\VS2008\VCProjects\Gps sample\Backup\Utils.cs">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="Microsoft.WindowsMobile.Samples.Location.csproj" Description="Проект успешно преобразован">
+</Event><Event ErrorLevel="3" Project="Microsoft.WindowsMobile.Samples.Location" Source="Microsoft.WindowsMobile.Samples.Location.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="Gps.sln" Description="Преобразование решения успешно завершено">
+</Event><Event ErrorLevel="3" Project="" Source="Gps.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\Form1.resx" Description="Преобразование файла завершилось успешно">
+</Event><Event ErrorLevel="3" Project="GpsSample" Source="GpsSample\Form1.resx" Description="Converted">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\Properties\Resources.resx" Description="Преобразование файла завершилось успешно">
+</Event><Event ErrorLevel="3" Project="GpsSample" Source="GpsSample\Properties\Resources.resx" Description="Converted">
+</Event><Event ErrorLevel="0" Project="GpsSample" Source="GpsSample\GpsSample.csproj" Description="Сканирование завершено: обновление для файлов проекта не требуется.">
+</Event><Event ErrorLevel="0" Project="Microsoft.WindowsMobile.Samples.Location" Source="Microsoft.WindowsMobile.Samples.Location.csproj" Description="Сканирование завершено: обновление для файлов проекта не требуется.">
+</Event></UpgradeLog>
