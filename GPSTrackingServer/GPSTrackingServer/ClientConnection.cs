@@ -3,32 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
-
-// Подключение к MySQL БД осуществляется при помощи MySQL .Net Connector, скачать который можно по ссылке ниже
-// http://dev.mysql.com/downloads/connector/net/6.6.html#downloads
-// P.S. из исходников у меня запускаться отказался, поэтому лучше качать .msi
-using MySql.Data.MySqlClient;
+using System.Timers;
 
 namespace GPSTrackingServer
 {
     class ClientConnection
     {
-        // Подключение БД
-        protected string ConnectionString = "Database=БАЗА;Data Source=ХОСТ;User Id=ПОЛЬЗОВАТЕЛЬ;Password=ПАРОЛЬ";
-        //Переменная ConnectionString - это строка подключения в которой:
-        //БАЗА - Имя базы в MySQL
-        //ХОСТ - Имя или IP-адрес сервера (если локально то можно и localhost)
-        //ПОЛЬЗОВАТЕЛЬ - Имя пользователя MySQL
-        //ПАРОЛЬ - говорит само за себя - пароль пользователя БД MySQL
-
-        /// <summary>
-        /// Конструктор сервера
-        /// </summary>
-
-        public string ClientName {private set; get;} // Имя клиента (устанавливается при успешной авторизации)
-        private Socket Sock; // Сокет клиента
-        private SocketAsyncEventArgs SockAsyncEventArgs; // объект необходимый для передачи сообщений  
+        public string ClientName { private set; get; }      // Имя клиента (устанавливается при успешной авторизации)
+        private Socket Sock;                                // Сокет клиента
+        private SocketAsyncEventArgs SockAsyncEventArgs;    // объект необходимый для передачи сообщений 
         private byte[] buff;
+        private DBConnection db = new DBConnection();       // подключение к базе данных
+
+        public event ConnectionEvent AuthorizationFaild;    // Событие успешной авторизации
+        public event ConnectionEvent AuthorizationSuccess;  // Событие не совсем успешной авторизации
+        public delegate void ConnectionEvent(ClientConnection sender, string message);   
+
+        System.Timers.Timer AuthTime = new System.Timers.Timer(3000); // время на авторизацию
 
         /// <summary>
         /// Конструктор, задающий основные параметры клиентского подключения
@@ -43,96 +34,23 @@ namespace GPSTrackingServer
             SockAsyncEventArgs.Completed += SockAsyncAuth_Completed;
             SockAsyncEventArgs.SetBuffer(buff, 0, buff.Length);
             ReceiveAsync(SockAsyncEventArgs);
-        }
-
-        //TODO: авторизация прикрутить
-        private bool authorization(string str)
-        {
-                //if (str == "desu@123")
-                {
-                    ClientName = str;
-                    Console.WriteLine("Auth Success :{0} ({1}) ",ClientName,Sock.RemoteEndPoint);
-                    return true;
-                }
-                Console.WriteLine("Auth fail : {0}",Sock.RemoteEndPoint);
-            return false;
-        }
-
-        //TODO: Сделать запрос пользователя для авторизации
-        private void Select(string Query)
-        {
-
-            MySqlCommand myCommand = new MySqlCommand(Query);
-
+            
+            AuthTime.Elapsed += new ElapsedEventHandler(delegate(object a, ElapsedEventArgs b)
+                    { 
+                        AuthTime.Stop();
+                        AuthorizationFaild(this,"Time of authorization ended");
+                    });
+                AuthTime.Start();
+             
         }
 
         /// <summary>
-        /// Добавляет данные в таблицу
+        /// В зависимости от вызванной асинхронной операции выбираем обработчик операции
         /// </summary>
-        /// <param name="query">Insert-запрос</param>
-        public void InsertQuery(string query)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SockAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
         {
-            MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            //string InsertQuery = "INSERT INTO Orders (id, customerId, amount) Values(1001, 23, 30.66)";
-            MySqlCommand Command = new MySqlCommand(query);
-            Command.Connection = Connection;
-            try
-            {
-                Connection.Open(); //Устанавливаем соединение с базой данных.
-                Command.ExecuteNonQuery();
-                Connection.Close(); //Обязательно закрываем соединение!
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                if (Connection.State == System.Data.ConnectionState.Open) { Connection.Close(); }
-            }
-        }
-
-        /// <summary>
-        /// Запрашивает данные из таблицы (зачем? - х.з., чтобы было)
-        /// </summary>
-        /// <param name="query">Select-запрос</param>
-        private void SelectQuery(string query)
-        {
-
-            MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            MySqlCommand cmd = new MySqlCommand(query, Connection);
-            MySqlDataReader reader = null;
-
-            try
-            {
-                Connection.Open(); //Устанавливаем соединение с базой данных.
-
-                reader = cmd.ExecuteReader();
-                while (reader.Read()) // перебираем полученные данные
-                {
-                    // тут мы их куда-то запихиваем
-                }
-
-                Connection.Close();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                if (reader != null) reader.Close();
-                if (Connection.State == System.Data.ConnectionState.Open) Connection.Close();
-            }
-        }
-
-       /// <summary>
-       /// В зависимости от вызванной асинхронной операции выбираем обработчик операции
-       /// </summary>
-       /// <param name="sender"></param>
-       /// <param name="e"></param>
-       private void SockAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
-       {
             switch (e.LastOperation)
             {
                 case SocketAsyncOperation.Receive:
@@ -151,8 +69,8 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void SockAsyncAuth_Completed(object sender, SocketAsyncEventArgs e)
         {
-            ProcessAuth(e); // проверяет логин пароль, в случае неудачи закрывает соединение
-            e.Completed -= SockAsyncAuth_Completed; // при успешной авторизации меняет обработчик событий на рабочий
+            ProcessAuth(e);
+            e.Completed -= SockAsyncAuth_Completed;
             e.Completed += SockAsyncEventArgs_Completed;
         }
 
@@ -162,9 +80,25 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void ProcessSend(SocketAsyncEventArgs e)
         {
-            if ((bool)SockAsyncEventArgs.UserToken == false) //проверяем находится ли наш сокет в состоянии отправки
+            if ((bool)SockAsyncEventArgs.UserToken == false)
                 if (e.SocketError == SocketError.Success)
                     ReceiveAsync(SockAsyncEventArgs);
+        }
+
+        /// <summary>
+        /// Сама авторизация с кучей проверок
+        /// </summary>
+        /// <param name="str">Строка авторизации</param>
+        private void Authorization(string str)
+        {
+            if (string.IsNullOrEmpty(str)) throw new AuthorizationException(Sock.RemoteEndPoint+": Auth string is empty");
+            string[] SplitedString = str.Replace("!", "").Split('@');
+            if (SplitedString.Count() != 2) throw new AuthorizationException(Sock.RemoteEndPoint + ": Auth string haz wrong format");
+            string result = db.SelectOne("select password from Users where UserName='" + SplitedString[0] + "'");
+            if (result == "User not found") throw new AuthorizationException(string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0]));
+            if (result != SplitedString[1]) throw new AuthorizationException(string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0]));
+            ClientName = SplitedString[0];
+            AuthorizationSuccess(this, string.Format("{0}: {1} Auth Success", Sock.RemoteEndPoint, ClientName));
         }
 
         /// <summary>
@@ -173,21 +107,19 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void ProcessAuth(SocketAsyncEventArgs e)
         {
-
             if (e.SocketError == SocketError.Success)
             {
+                AuthTime.Stop();
                 SockAsyncEventArgs.UserToken = false;
                 string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
-                if (authorization(str))
+                try
                 {
-                    SendAsync("Success");
+                    Authorization(str);
                 }
-                else
-                {
-                    SendAsync("Fail");
-                    Sock.Shutdown(SocketShutdown.Both);
-                }
+                catch (AuthorizationException ex) { AuthorizationFaild(this, ex.Message); }
+                catch (Exception ex) { Console.WriteLine(ex.Message); }
             }
+            else AuthorizationFaild(this, "Lost connection");
         }
 
         /// <summary>
@@ -196,11 +128,13 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void ProcessReceive(SocketAsyncEventArgs e)
         {
-            
+
             if (e.SocketError == SocketError.Success)
             {
                 SockAsyncEventArgs.UserToken = false;
                 string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
+                if (string.IsNullOrEmpty(str)) { AuthorizationFaild(this,  ClientName + " - Connection Lost"); return; }
+                ReceiveAsync(e);
                 Console.WriteLine("Incoming msg from #{0}: {1}", ClientName, str);
                 //SendAsync("You send " + str);
             }
@@ -212,7 +146,10 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void ReceiveAsync(SocketAsyncEventArgs e)
         {
-            if (Sock.ReceiveAsync(e)) ProcessReceive(e);
+            bool willRaiseEvent = Sock.ReceiveAsync(e);
+            e.UserToken = true;
+            if (!willRaiseEvent)
+                ProcessReceive(e);
         }
 
         /// <summary>
@@ -221,7 +158,7 @@ namespace GPSTrackingServer
         /// <param name="data">Сообщение</param>
         public void SendAsync(string data)
         {
-            byte [] buff = Encoding.UTF8.GetBytes(data);
+            byte[] buff = Encoding.UTF8.GetBytes(data);
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += SockAsyncEventArgs_Completed;
             e.SetBuffer(buff, 0, buff.Length);
@@ -234,7 +171,9 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void SendAsync(SocketAsyncEventArgs e)
         {
-            if (Sock.SendAsync(e)) { ProcessSend(e); }
+            bool willRaiseEvent = Sock.SendAsync(e);
+            if (!willRaiseEvent)
+                ProcessSend(e);
         }
 
         /// <summary>
@@ -242,7 +181,7 @@ namespace GPSTrackingServer
         /// </summary>
         public void CloseConnection()
         {
-            Sock.Close();
+            Sock.Shutdown(SocketShutdown.Both);
         }
     }
 }

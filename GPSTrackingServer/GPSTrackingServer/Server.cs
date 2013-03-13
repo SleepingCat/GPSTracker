@@ -23,6 +23,22 @@ namespace GPSTrackingServer
         }
     }
 
+    class AuthorizationException : Exception
+    {
+        string _message = "Ошибка авторизации";
+        public AuthorizationException(string message)
+        {
+            _message = message;
+        }
+        public override string Message
+        {
+            get
+            {
+                return _message;
+            }
+        }
+    }
+
     class Server
     {
         // Порт сервера
@@ -60,11 +76,28 @@ namespace GPSTrackingServer
             if (e.SocketError == SocketError.Success)
             {
                 ClientConnection Client = new ClientConnection(e.AcceptSocket);
-                Clients.Add(Client);
+                Client.AuthorizationFaild += new ClientConnection.ConnectionEvent(Client_AuthorizationFaild);
+                Client.AuthorizationSuccess += new ClientConnection.ConnectionEvent(Client_AuthorizationSuccess);
+                Console.WriteLine("{0} Trying to connect", e.AcceptSocket.RemoteEndPoint);
             }
             e.AcceptSocket = null;
             AcceptAsync(AcceptAsyncArgs);
         }
+
+        void Client_AuthorizationSuccess(ClientConnection sender, string message)
+        {
+            Clients.Add(sender);
+            sender.SendAsync(message);
+            Console.WriteLine(message);
+        }
+
+        void Client_AuthorizationFaild(ClientConnection sender, string message)
+        {
+            sender.SendAsync(message);
+            sender.CloseConnection();
+            Clients.Remove(sender);
+            Console.WriteLine(message);
+        }       
         
         /// <summary>
         /// Принимает асинхронное подключение
@@ -72,7 +105,8 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void AcceptAsync(SocketAsyncEventArgs e)
         {
-            if (Sock.AcceptAsync(e)) { AcceptCompleted(Sock,e); }
+            bool WillRiseEvent = Sock.AcceptAsync(e);
+            if (!WillRiseEvent){ AcceptCompleted(Sock,e); }
         }
 
         /// <summary>
@@ -102,6 +136,8 @@ namespace GPSTrackingServer
         {
             Sock.Bind(new IPEndPoint(IPAddress.Any,Port));
             Sock.Listen(50);
+            //AcceptAsyncArgs = new SocketAsyncEventArgs();
+            //AcceptAsyncArgs.Completed += AcceptCompleted;
             AcceptAsync(AcceptAsyncArgs);
             Console.WriteLine("Server started on port {0}", Port);
         }
