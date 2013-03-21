@@ -104,7 +104,7 @@ namespace GPSWinMobileClient
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -160,7 +160,7 @@ namespace GPSWinMobileClient
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -189,7 +189,7 @@ namespace GPSWinMobileClient
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine(e.Message);
             }
         }
 

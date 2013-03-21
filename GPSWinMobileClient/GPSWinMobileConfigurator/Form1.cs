@@ -28,22 +28,25 @@ using Microsoft.WindowsMobile.Location;
 
 namespace GPSWinMobileConfigurator
 {
+
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
     public class Form1 : System.Windows.Forms.Form
     {
-        private System.Windows.Forms.MenuItem exitMenuItem;
+        private System.Windows.Forms.MenuItem Settings;
         private System.Windows.Forms.MainMenu mainMenu1;
         private System.Windows.Forms.Label status;
-        private MenuItem menuItem2;
-        private MenuItem startGpsMenuItem;
-        private MenuItem stopGpsMenuItem;
-
+        private MenuItem GPGmenu;
+        private string _st;
 
         private EventHandler updateDataHandler;
         GpsDeviceState device = null;
         GpsPosition position = null;
+
+        Settings settings = new Settings();
+
+        AsynchronousClient Client = new AsynchronousClient();
 
         Gps gps = new Gps();
 
@@ -73,53 +76,45 @@ namespace GPSWinMobileConfigurator
         private void InitializeComponent()
         {
             this.mainMenu1 = new System.Windows.Forms.MainMenu();
-            this.exitMenuItem = new System.Windows.Forms.MenuItem();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
-            this.startGpsMenuItem = new System.Windows.Forms.MenuItem();
-            this.stopGpsMenuItem = new System.Windows.Forms.MenuItem();
+            this.Settings = new System.Windows.Forms.MenuItem();
+            this.GPGmenu = new System.Windows.Forms.MenuItem();
             this.status = new System.Windows.Forms.Label();
+            this.SuspendLayout();
             // 
             // mainMenu1
             // 
-            this.mainMenu1.MenuItems.Add(this.exitMenuItem);
-            this.mainMenu1.MenuItems.Add(this.menuItem2);
+            this.mainMenu1.MenuItems.Add(this.Settings);
+            this.mainMenu1.MenuItems.Add(this.GPGmenu);
             // 
-            // exitMenuItem
+            // Settings
             // 
-            this.exitMenuItem.Text = "Exit";
-            this.exitMenuItem.Click += new System.EventHandler(this.exitMenuItem_Click);
+            this.Settings.Text = "Settings";
+            this.Settings.Click += new System.EventHandler(this.Settings_Click);
             // 
-            // menuItem2
+            // GPGmenu
             // 
-            this.menuItem2.MenuItems.Add(this.startGpsMenuItem);
-            this.menuItem2.MenuItems.Add(this.stopGpsMenuItem);
-            this.menuItem2.Text = "GPS";
-            // 
-            // startGpsMenuItem
-            // 
-            this.startGpsMenuItem.Text = "Start GPS";
-            this.startGpsMenuItem.Click += new System.EventHandler(this.startGpsMenuItem_Click);
-            // 
-            // stopGpsMenuItem
-            // 
-            this.stopGpsMenuItem.Enabled = false;
-            this.stopGpsMenuItem.Text = "Stop GPS";
-            this.stopGpsMenuItem.Click += new System.EventHandler(this.stopGpsMenuItem_Click);
+            this.GPGmenu.Text = "Start";
+            this.GPGmenu.Click += new System.EventHandler(this.menuItem2_Click);
             // 
             // status
             // 
+            this.status.Dock = System.Windows.Forms.DockStyle.Fill;
             this.status.Location = new System.Drawing.Point(0, 0);
-            this.status.Size = new System.Drawing.Size(237, 173);
+            this.status.Name = "status";
+            this.status.Size = new System.Drawing.Size(240, 268);
             this.status.Text = "label1";
             // 
             // Form1
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(240, 268);
             this.Controls.Add(this.status);
             this.Menu = this.mainMenu1;
-            this.Text = "Form1";
+            this.Name = "Form1";
+            this.Text = "GPSTracker";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Closed += new System.EventHandler(this.Form1_Closed);
+            this.ResumeLayout(false);
 
         }
         #endregion
@@ -133,16 +128,6 @@ namespace GPSWinMobileConfigurator
             Application.Run(new Form1());
         }
 
-        private void exitMenuItem_Click(object sender, EventArgs e)
-        {
-            if (gps.Opened)
-            {
-                gps.Close();
-            }
-
-            Close();
-        }
-
         private void Form1_Load(object sender, System.EventArgs e)
         {
             updateDataHandler = new EventHandler(UpdateData);
@@ -154,6 +139,16 @@ namespace GPSWinMobileConfigurator
 
             gps.DeviceStateChanged += new DeviceStateChangedEventHandler(gps_DeviceStateChanged);
             gps.LocationChanged += new LocationChangedEventHandler(gps_LocationChanged);
+
+            Client.Connected += new AsynchronousClient.ConnectionEventDelegate(Client_Connected);
+
+            Slipknot.DisableDeviceSleep();
+        }
+
+        void Client_Connected(string status)
+        {
+            _st = status;
+            Invoke(updateDataHandler);
         }
 
         protected void gps_LocationChanged(object sender, LocationChangedEventArgs args)
@@ -163,7 +158,6 @@ namespace GPSWinMobileConfigurator
             // call the UpdateData method via the updateDataHandler so that we
             // update the UI on the UI thread
             Invoke(updateDataHandler);
-
         }
 
         void gps_DeviceStateChanged(object sender, DeviceStateChangedEventArgs args)
@@ -185,6 +179,8 @@ namespace GPSWinMobileConfigurator
                     str = device.FriendlyName + " " + device.ServiceState + ", " + device.DeviceState + "\n";
                 }
 
+                string message = String.Empty;
+
                 if (position != null)
                 {
 
@@ -192,12 +188,14 @@ namespace GPSWinMobileConfigurator
                     {
                         str += "Latitude (DD):\n   " + position.Latitude + "\n";
                         str += "Latitude (D,M,S):\n   " + position.LatitudeInDegreesMinutesSeconds + "\n";
+                        message += position.Latitude + "|";
                     }
 
                     if (position.LongitudeValid)
                     {
                         str += "Longitude (DD):\n   " + position.Longitude + "\n";
                         str += "Longitude (D,M,S):\n   " + position.LongitudeInDegreesMinutesSeconds + "\n";
+                        message += position.Longitude + "|";
                     }
 
                     if (position.SatellitesInSolutionValid &&
@@ -209,45 +207,62 @@ namespace GPSWinMobileConfigurator
                             position.SatelliteCount + ")\n";
                     }
 
+                    if (position.SpeedValid)
+                    {
+                        str += "Speed:\n" + position.Speed + "\n";
+                        message += position.Speed + "|";
+                    }
+
+                    if (position.EllipsoidAltitudeValid)
+                    {
+                        str += "Altitude: \n" + position.EllipsoidAltitude + "\n";
+                    }
+
+                    if (position.PositionDilutionOfPrecisionValid)
+                    {
+                        str += "PositionDilutionOfPrecision: \n" + position.PositionDilutionOfPrecision + "\n";
+                    }
+
+                    if (position.SeaLevelAltitudeValid)
+                    {
+                        str += "SeaLevelAltitude: \n" + position.SeaLevelAltitude + "\n";
+                    }
+                    
                     if (position.TimeValid)
                     {
                         str += "Time:\n   " + position.Time.ToString() + "\n";
+                        message += position.Time;
                     }
                 }
-
                 status.Text = str;
-
+                Client.Send(message);
             }
         }
 
         private void Form1_Closed(object sender, System.EventArgs e)
         {
-            if (gps.Opened)
+            if (Client.IsConnected) { Client.Stop(); }
+            if (gps.Opened) { gps.Close(); }
+            Slipknot.EnableDeviceSleep();
+        }
+
+        private void menuItem2_Click(object sender, EventArgs e)
+        {
+            if (!Client.IsConnected) { Client = new AsynchronousClient(settings); Client.Start(); } else { Client.Stop(); }
+            if (!gps.Opened) { gps = new Gps(); gps.Open(); } else { gps.Close(); }
+            if (Client.IsConnected && gps.Opened) { GPGmenu.Text = "Stop"; }
+            else 
             {
-                gps.Close();
+                if (gps.Opened) gps.Close();
+                if (Client.IsConnected) Client.Stop();
+                GPGmenu.Text = "Start";
             }
         }
 
-        private void stopGpsMenuItem_Click(object sender, EventArgs e)
+        private void Settings_Click(object sender, EventArgs e)
         {
-            if (gps.Opened)
-            {
-                gps.Close();
-            }
-
-            startGpsMenuItem.Enabled = true;
-            stopGpsMenuItem.Enabled = false;
-        }
-
-        private void startGpsMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!gps.Opened)
-            {
-                gps.Open();
-            }
-
-            startGpsMenuItem.Enabled = false;
-            stopGpsMenuItem.Enabled = true;
+            FormSettings _settings = new FormSettings(settings);
+            _settings.ShowDialog();
         }
     }
 }

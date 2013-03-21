@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
-using System.Diagnostics;
 
-namespace GPSWinMobileClient
+namespace GPSWinMobileConfigurator
 {
     // State object for receiving data from remote device.
     public class StateObject
@@ -15,7 +13,7 @@ namespace GPSWinMobileClient
         // Client socket.
         public Socket workSocket = null;
         // Size of receive buffer.
-        public const int BufferSize = 256;
+        public const int BufferSize = 32;
         // Receive buffer.
         public byte[] buffer = new byte[BufferSize];
         // Received data string.
@@ -24,11 +22,14 @@ namespace GPSWinMobileClient
 
     public class AsynchronousClient
     {
-        // The port number for the remote device.
-        private string _host = "192.168.1.5";
-        private int _port = 4505;
-        // Работает ли клиент
+        public delegate void ConnectionEventDelegate(string status);
+        public event ConnectionEventDelegate Connected;
+
+        Settings settings;
+
         public bool IsConnected { get; private set; }
+
+        Thread th;
 
         // ManualResetEvent instances signal completion.
         private ManualResetEvent connectDone = new ManualResetEvent(false);
@@ -36,28 +37,26 @@ namespace GPSWinMobileClient
         private ManualResetEvent AuthDone = new ManualResetEvent(false);
         private Socket client;
 
-        public AsynchronousClient(string host, int port)
-        {
-            IsConnected = false;
-            _host = "host";
-            _port = port;
-        }
-
         public AsynchronousClient()
         {
-            IsConnected = false;
+            settings = new Settings();
         }
-        Thread th;
+
+        public AsynchronousClient(Settings _settings)
+        {
+            settings = _settings;
+        }
 
         public void Start()
         {
-            // Connect to a remote device.
+            IsConnected = false;
             try
             {
                 // Establish the remote endpoint for the socket.
                 // The name of the 
                 // remote device is "host.contoso.com".
-                IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse(_host), _port);
+
+                IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse(settings.Host), Convert.ToInt16(settings.Port));
 
                 // Create a TCP/IP socket.
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -65,29 +64,26 @@ namespace GPSWinMobileClient
                 // Connect to the remote endpoint.
                 client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
                 connectDone.WaitOne();
-
                 if (!IsConnected) { return; }
 
-                // Send test data to the remote device.
-
-
                 // Receive the response from the remote device.
-                th = new Thread(delegate () 
-                    {
-                        Receive(client);
-                    });
+                th = new Thread(delegate()
+                {
+                    Receive(client);
+                });
                 th.IsBackground = true;
                 th.Start();
 
-                Send(client, "!Desu@202cb962ac59075b964b07152d234b70");
+                // Send test data to the remote device.
+                Send(client, "!" + settings.UserName + "@" + settings.Password);
+                //Send(client, string.Format("!{0}@{1}", settings.UserName, settings.Password));
                 sendDone.WaitOne();
                 AuthDone.WaitOne();
-
-                IsConnected = true;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Allert.ShowMessage(e.ToString());
+                //Connected("Connection Error");
             }
         }
 
@@ -101,15 +97,16 @@ namespace GPSWinMobileClient
                 // Complete the connection.
                 client.EndConnect(ar);
 
-                Console.WriteLine("Socket connected to {0}", client.RemoteEndPoint.ToString());
+                //TODO: допилить инвок
+                //Console.WriteLine("Socket connected to {0}", client.RemoteEndPoint.ToString());
 
                 // Signal that the connection has been made.
                 IsConnected = true;
             }
             catch (Exception e)
             {
+                Allert.ShowMessage(e.Message);
                 IsConnected = false;
-                Console.WriteLine(e.ToString());
             }
             finally { connectDone.Set(); }
         }
@@ -127,8 +124,9 @@ namespace GPSWinMobileClient
             }
             catch (Exception e)
             {
-                IsConnected = false;
-                Console.WriteLine(e.ToString());
+                Allert.ShowMessage(e.Message);
+                Connected("Connection Error");
+                return;
             }
         }
 
@@ -143,14 +141,15 @@ namespace GPSWinMobileClient
 
                 int bytesRead = 0;
 
-                try // дело в том, что этот кэллбэк запускается в отдельном потоке,а при уничтожении объекта сокета посылает пустое значение, к которому этот, еще живой кэллбэк, пытается применить метод уже уничтоженного сокета.
+                try // Дело в том, что этот кэллбэк запускается в отдельном потоке,а при уничтожении объекта сокета посылает пустое значение, к которому этот, еще живой кэллбэк, пытается применить метод уже уничтоженного сокета.
+                    // Поэтому этот эксепшен может появиться только в случае закрытия клиента и не требует ни обработки ни вывода какого-либо сообщения.
                 {
                     // Read data from the remote device.
                     bytesRead = client.EndReceive(ar);
                 }
                 catch (ObjectDisposedException) { }
 
-                        // The response from the remote device.
+                // The response from the remote device.
                 StringBuilder response = new StringBuilder();
 
                 if (bytesRead > 0)
@@ -158,43 +157,37 @@ namespace GPSWinMobileClient
                     // There might be more data, so store the data received so far.
                     state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
 
-                    if (bytesRead < StateObject.BufferSize)
+                    if (state.sb.ToString() == "Success")
                     {
-                        //Connected(response);
-                        Console.WriteLine(state.sb.ToString());
-                        if (state.sb.ToString() == "Success") { AuthDone.Set(); }
-                        state.sb = new StringBuilder();
+                        Connected(state.sb.ToString());
+                        AuthDone.Set();
                     }
+                    state.sb = new StringBuilder();
+
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
                 }
             }
             catch (Exception e)
             {
-                IsConnected = false;
-                Console.WriteLine(e.ToString());
+                Allert.ShowMessage(e.Message);
+                Connected("Connection Error");
+                return;
             }
         }
 
-        public void Send(string msg)
+        public void Send(string _msg)
         {
-            Send(client,msg);
+            Send(client, _msg);
+            sendDone.WaitOne();
         }
 
         private void Send(Socket client, String data)
         {
-            try
-            {
-                // Convert the string data to byte data using ASCII encoding.
-                byte[] byteData = Encoding.ASCII.GetBytes(data);
+            // Convert the string data to byte data using ASCII encoding.
+            byte[] byteData = Encoding.ASCII.GetBytes(data);
 
-                // Begin sending the data to the remote device.
-                client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), client);
-            }
-            catch (Exception ex)
-            {
-                IsConnected = false;
-                Console.WriteLine(ex.Message);
-            }
+            // Begin sending the data to the remote device.
+            client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), client);
         }
 
         private void SendCallback(IAsyncResult ar)
@@ -206,42 +199,29 @@ namespace GPSWinMobileClient
 
                 // Complete sending the data to the remote device.
                 int bytesSent = client.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to server.", bytesSent);
+                //Console.WriteLine("Sent {0} bytes to server.", bytesSent);
+
+                
             }
             catch (Exception e)
             {
-                IsConnected = false;
-                Console.WriteLine(e.ToString());
+                Allert.ShowMessage(e.Message);
+                Connected("Connection Error");
+                return;
             }
-            // Signal that all bytes have been sent.
-            finally { sendDone.Set(); }
+            finally 
+            {
+                // Signal that all bytes have been sent.
+                sendDone.Set();
+            }
         }
 
         public void Stop()
         {
             // Release the socket.
-            IsConnected = false;
-            th.Abort();
             client.Shutdown(SocketShutdown.Both);
             client.Close();
-        }
-    }
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            AsynchronousClient Cl = new AsynchronousClient();
-            Cl.Start();
-            /*
-            while (true)
-            {
-                string msg = Console.ReadLine();
-                Cl.Send(msg);
-            }
-             * */
-            Console.ReadKey();
-            Cl.Stop();
-            Console.ReadKey();
+            IsConnected = false;
         }
     }
 }
