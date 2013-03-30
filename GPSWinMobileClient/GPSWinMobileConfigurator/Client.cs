@@ -29,7 +29,7 @@ namespace GPSWinMobileConfigurator
 
         public bool IsConnected { get; private set; }
 
-        Thread th;
+        //Thread th;
 
         // ManualResetEvent instances signal completion.
         private ManualResetEvent connectDone = new ManualResetEvent(false);
@@ -39,17 +39,20 @@ namespace GPSWinMobileConfigurator
 
         public AsynchronousClient()
         {
-            settings = new Settings();
+            IsConnected = false;
         }
 
+        /*
         public AsynchronousClient(Settings _settings)
         {
             settings = _settings;
+            IsConnected = false;
         }
-
+        */
         public void Start()
         {
-            IsConnected = false;
+            settings = new Settings();
+            //IsConnected = false;
             try
             {
                 // Establish the remote endpoint for the socket.
@@ -67,23 +70,24 @@ namespace GPSWinMobileConfigurator
                 if (!IsConnected) { return; }
 
                 // Receive the response from the remote device.
-                th = new Thread(delegate()
-                {
-                    Receive(client);
-                });
-                th.IsBackground = true;
-                th.Start();
+                //th = new Thread(delegate()
+                //{ 
+                Receive(client);
+                //});
+                //th.IsBackground = true;
+                //th.Start();
 
                 // Send test data to the remote device.
-                Send(client, "!" + settings.UserName + "@" + settings.Password);
+                Send("!" + settings.UserName + "@" + settings.Password);
+
                 //Send(client, string.Format("!{0}@{1}", settings.UserName, settings.Password));
-                sendDone.WaitOne();
-                AuthDone.WaitOne();
+                //sendDone.WaitOne();
+                //AuthDone.WaitOne();
             }
             catch (Exception e)
             {
                 Allert.ShowMessage(e.ToString());
-                //Connected("Connection Error");
+                Connected("Connection Error");
             }
         }
 
@@ -157,13 +161,13 @@ namespace GPSWinMobileConfigurator
                     // There might be more data, so store the data received so far.
                     state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
 
-                    if (state.sb.ToString() == "Success")
+                    if (state.sb.ToString() == "Auth Success")
                     {
-                        Connected(state.sb.ToString());
-                        AuthDone.Set();
+                        
+                        //AuthDone.Set();
                     }
+                    Connected(state.sb.ToString());
                     state.sb = new StringBuilder();
-
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
                 }
             }
@@ -219,6 +223,9 @@ namespace GPSWinMobileConfigurator
         public void Stop()
         {
             // Release the socket.
+            sendDone.Set();
+            AuthDone.Set();
+            connectDone.Set();
             client.Shutdown(SocketShutdown.Both);
             client.Close();
             IsConnected = false;

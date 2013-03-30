@@ -14,7 +14,6 @@ namespace GPSWinMobileConfigurator
         RegistryKey rkTest;
         MD5 md5 = MD5.Create();
 
-        
         private string GetMD5(string input)
         {
             // пример сперт с мсдна - костыль на костыле ИМХО. Что нельзя было сделать нормальный МД5 хотябы?
@@ -39,6 +38,8 @@ namespace GPSWinMobileConfigurator
         public string Host {get; set;}
         public string Port { get; set; }
         public string UserName { get; set; }
+        public int SendingPeriod { get; set; }
+        public int LostPackagesLimit { get; set; }
         private string _hashPassword;
         public string Password 
         {
@@ -64,6 +65,8 @@ namespace GPSWinMobileConfigurator
                     Port = rkTest.GetValue("Port").ToString();
                     UserName = rkTest.GetValue("UserName").ToString();
                     _hashPassword = rkTest.GetValue("Password").ToString();
+                    SendingPeriod = int.Parse(rkTest.GetValue("SendingPeriod").ToString());
+                    LostPackagesLimit = int.Parse(rkTest.GetValue("LostPackages").ToString());
                 }
                 else { throw new Exception("RegKeys not found.");}
                 rkTest.Close();
@@ -81,6 +84,8 @@ namespace GPSWinMobileConfigurator
             Port = "4505";
             UserName = "desu";
             Password = "123";
+            SendingPeriod = 1;
+            LostPackagesLimit = 0;
         }
 
         public void Save()
@@ -90,6 +95,8 @@ namespace GPSWinMobileConfigurator
             rkTest.SetValue("Port", Port);
             rkTest.SetValue("UserName", UserName);
             rkTest.SetValue("Password", Password);
+            rkTest.SetValue("SendingPeriod", SendingPeriod);
+            rkTest.SetValue("LostPackages", LostPackagesLimit);
             rkTest.Close();
         }
     }

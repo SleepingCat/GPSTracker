@@ -11,9 +11,12 @@ namespace GPSTrackingServer
         {
             Server srv = new Server();
             srv.Start();
-            srv.SendToAll(Console.ReadLine());
+            while (srv.IsRun)
+            {
+                Console.WriteLine(srv.Command(Console.ReadLine()));
+            }
+            Console.WriteLine("Server shutdown, press any key to exit...");
             Console.ReadKey();
-            srv.Stop();
         }
     }
 }

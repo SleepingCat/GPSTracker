@@ -39,16 +39,17 @@ namespace GPSTrackingServer
         {
             if (string.IsNullOrEmpty(ConnectionString)) { throw new ArgumentNullException(ConnectionString); }
             Connection = new MySqlConnection(ConnectionString);
+            Connection.Open();
         }
 
         public string SelectOne(string Query)
         {
             try
             {
-                Connection.Open();
+                //Connection.Open();
                 myCommand = new MySqlCommand(Query, Connection);
                 string result = myCommand.ExecuteScalar().ToString();
-                Connection.Close();
+                //Connection.Close();
                 return result;
             }
             catch (NullReferenceException)
@@ -60,10 +61,12 @@ namespace GPSTrackingServer
                 Console.WriteLine(ex.Message);
                 return ex.Message;
             }
+                /*
             finally
             {
                 if (Connection.State == System.Data.ConnectionState.Open) { Connection.Close(); }
             }
+                 */
         }
         /// <summary>
         /// Добавляет данные в таблицу
@@ -75,19 +78,24 @@ namespace GPSTrackingServer
             MySqlCommand Command = new MySqlCommand(query,Connection);
             try
             {
-                Connection.Open(); //Устанавливаем соединение с базой данных.
+                //Connection.Open(); //Устанавливаем соединение с базой данных.
                 Command.ExecuteNonQuery();
-                Connection.Close(); //Обязательно закрываем соединение!
+                //Connection.Close(); //Обязательно закрываем соединение!
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+                /*
             finally
             {
                 if (Connection.State == System.Data.ConnectionState.Open) { Connection.Close(); }
             }
+                 */
         }
+
+        public void Open() { Connection.Open(); }
+        public void Close() { Connection.Close(); }
 
         /// <summary>
         /// Запрашивает данные из таблицы (зачем? - х.з., чтобы было)
@@ -102,7 +110,7 @@ namespace GPSTrackingServer
 
             try
             {
-                Connection.Open(); //Устанавливаем соединение с базой данных.
+                //Connection.Open(); //Устанавливаем соединение с базой данных.
 
                 reader = cmd.ExecuteReader();
                 while (reader.Read()) // перебираем полученные данные
@@ -110,7 +118,7 @@ namespace GPSTrackingServer
                     // тут мы их куда-то запихиваем
                 }
 
-                Connection.Close();
+                //Connection.Close();
             }
             catch (MySqlException ex)
             {
@@ -119,7 +127,7 @@ namespace GPSTrackingServer
             finally
             {
                 if (reader != null) reader.Close();
-                if (Connection.State == System.Data.ConnectionState.Open) Connection.Close();
+                //if (Connection.State == System.Data.ConnectionState.Open) Connection.Close();
             }
         }
     }

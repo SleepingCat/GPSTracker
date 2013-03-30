@@ -1,0 +1,5 @@
+D:\GPSTracker\testClient\ConsoleApplication1\ConsoleApplication1\obj\Debug\ResolveAssemblyReference.cache
+D:\GPSTracker\testClient\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+D:\GPSTracker\testClient\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+D:\GPSTracker\testClient\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+D:\GPSTracker\testClient\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb

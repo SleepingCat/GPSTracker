@@ -7,6 +7,33 @@ using System.Timers;
 
 namespace GPSTrackingServer
 {
+    class Coordinates
+    {
+        public bool IsGood { get; private set; }
+        private string _datetime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+        public string Time { get { return _datetime; } }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
+        public string Speed { get; set; }
+
+        public Coordinates() { }
+        public Coordinates(string str) { GetCoords(str); }
+
+        public void GetCoords(string _str)
+        {
+            try
+            {
+                string[] separator = { "|" };
+                string[] tmp = _str.Replace(",",".").Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                Latitude = tmp[0];
+                Longitude = tmp[1];
+                Speed = tmp[2];
+                IsGood = true;
+            }
+            catch (Exception) { IsGood = false; }
+        }
+    }
+
     class ClientConnection
     {
         public string ClientName { private set; get; }      // Имя клиента (устанавливается при успешной авторизации)
@@ -19,7 +46,7 @@ namespace GPSTrackingServer
         public event ConnectionEvent AuthorizationSuccess;  // Событие не совсем успешной авторизации
         public delegate void ConnectionEvent(ClientConnection sender, string message);   
 
-        System.Timers.Timer AuthTime = new System.Timers.Timer(3000); // время на авторизацию
+        System.Timers.Timer AuthTime = new System.Timers.Timer(9000); // время на авторизацию
 
         /// <summary>
         /// Конструктор, задающий основные параметры клиентского подключения
@@ -34,7 +61,7 @@ namespace GPSTrackingServer
             SockAsyncEventArgs.Completed += SockAsyncAuth_Completed;
             SockAsyncEventArgs.SetBuffer(buff, 0, buff.Length);
             ReceiveAsync(SockAsyncEventArgs);
-            
+
             AuthTime.Elapsed += new ElapsedEventHandler(delegate(object a, ElapsedEventArgs b)
                     { 
                         AuthTime.Stop();
@@ -136,6 +163,10 @@ namespace GPSTrackingServer
                 if (string.IsNullOrEmpty(str)) { AuthorizationFaild(this,  ClientName + " - Connection Lost"); return; }
                 ReceiveAsync(e);
                 Console.WriteLine("Incoming msg from #{0}: {1}", ClientName, str);
+                Console.WriteLine(str);
+                Coordinates coords = new Coordinates(str);
+                if (coords.IsGood) db.InsertQuery(string.Format("insert into {0}(Latitude, Longitude, Speed, Time) values('{1}','{2}','{3}','{4}')",
+                    ClientName, coords.Latitude, coords.Longitude, coords.Speed, coords.Time));
                 //SendAsync("You send " + str);
             }
         }
@@ -182,6 +213,7 @@ namespace GPSTrackingServer
         public void CloseConnection()
         {
             Sock.Shutdown(SocketShutdown.Both);
+            db.Close();
         }
     }
 }

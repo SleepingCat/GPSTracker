@@ -22,13 +22,14 @@
 using System;
 using System.Drawing;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Text;
 using System.Data;
 using Microsoft.WindowsMobile.Location;
 
 namespace GPSWinMobileConfigurator
 {
-
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
@@ -40,7 +41,10 @@ namespace GPSWinMobileConfigurator
         private MenuItem GPGmenu;
         private string _st;
 
+        private int KeepAliveCounter = 0;
+
         private EventHandler updateDataHandler;
+        private EventHandler updateStatusHandler;
         GpsDeviceState device = null;
         GpsPosition position = null;
 
@@ -49,6 +53,8 @@ namespace GPSWinMobileConfigurator
         AsynchronousClient Client = new AsynchronousClient();
 
         Gps gps = new Gps();
+
+        Coordinates Coords;
 
         public Form1()
         {
@@ -131,7 +137,10 @@ namespace GPSWinMobileConfigurator
         private void Form1_Load(object sender, System.EventArgs e)
         {
             updateDataHandler = new EventHandler(UpdateData);
-         
+            updateStatusHandler = new EventHandler(UpdateStatus);
+
+            Coords = new Coordinates(Convert.ToInt16(settings.SendingPeriod));
+       
             status.Text = "";
             
             status.Width = Screen.PrimaryScreen.WorkingArea.Width;
@@ -142,13 +151,15 @@ namespace GPSWinMobileConfigurator
 
             Client.Connected += new AsynchronousClient.ConnectionEventDelegate(Client_Connected);
 
-            Slipknot.DisableDeviceSleep();
+            KeepAliveCounter = settings.LostPackagesLimit;
+
+            //Slipknot.DisableDeviceSleep();
         }
 
-        void Client_Connected(string status)
+        void Client_Connected(string _status)
         {
-            _st = status;
-            Invoke(updateDataHandler);
+            _st = _status;
+            Invoke(updateStatusHandler);
         }
 
         protected void gps_LocationChanged(object sender, LocationChangedEventArgs args)
@@ -166,11 +177,24 @@ namespace GPSWinMobileConfigurator
 
             // call the UpdateData method via the updateDataHandler so that we
             // update the UI on the UI thread
-            Invoke(updateDataHandler);
+            //Invoke(updateDataHandler);
+        }
+
+        void UpdateStatus(object sender, System.EventArgs args)
+        {
+            if (_st == "Connection Error") { StopAllNow(_st); }
+            if (_st == "Auth Success") { gps.Open(); }
+            if (_st == "Auth Failed") { StopAllNow(_st); }
+            if (_st == "Keep Alive =)" && settings.LostPackagesLimit > 0) 
+            { 
+                KeepAliveCounter++;
+                if (KeepAliveCounter > settings.SendingPeriod * settings.LostPackagesLimit) { StopAllNow("Connection lost"); }
+            }
         }
 
         void UpdateData(object sender, System.EventArgs args)
         {
+            //this.Text = _st;
             if (gps.Opened)
             {
                 string str = "";
@@ -188,14 +212,15 @@ namespace GPSWinMobileConfigurator
                     {
                         str += "Latitude (DD):\n   " + position.Latitude + "\n";
                         str += "Latitude (D,M,S):\n   " + position.LatitudeInDegreesMinutesSeconds + "\n";
-                        message += position.Latitude + "|";
+                        Coords.Latitude = position.Latitude;
+                        //message += position.Latitude + "|";
                     }
 
                     if (position.LongitudeValid)
                     {
                         str += "Longitude (DD):\n   " + position.Longitude + "\n";
                         str += "Longitude (D,M,S):\n   " + position.LongitudeInDegreesMinutesSeconds + "\n";
-                        message += position.Longitude + "|";
+                        //message += position.Longitude + "|";
                     }
 
                     if (position.SatellitesInSolutionValid &&
@@ -203,14 +228,15 @@ namespace GPSWinMobileConfigurator
                         position.SatelliteCountValid)
                     {
                         str += "Satellite Count:\n   " + position.GetSatellitesInSolution().Length + "/" +
-                            position.GetSatellitesInView().Length + " (" +
-                            position.SatelliteCount + ")\n";
+                        position.GetSatellitesInView().Length + " (" +
+                        position.SatelliteCount + ")\n";
                     }
 
                     if (position.SpeedValid)
                     {
                         str += "Speed:\n" + position.Speed + "\n";
-                        message += position.Speed + "|";
+                        Coords.Speed = position.Speed;
+                        //message += position.Speed + "|";
                     }
 
                     if (position.EllipsoidAltitudeValid)
@@ -227,42 +253,147 @@ namespace GPSWinMobileConfigurator
                     {
                         str += "SeaLevelAltitude: \n" + position.SeaLevelAltitude + "\n";
                     }
-                    
+
                     if (position.TimeValid)
                     {
                         str += "Time:\n   " + position.Time.ToString() + "\n";
-                        message += position.Time;
+                        Coords.Time = position.Time;
+                        //message += position.Time;
+                    }
+
+                    if (position.LatitudeValid && position.LongitudeValid && position.SpeedValid)
+                    {
+                        Coords.Longitude = position.Longitude;
+                        Coords.Latitude = position.Latitude;
+                        Coords.Speed = position.Speed;
+                        Coords.Counter++;
+                    }
+
+                    if (Coords.Counter >= settings.SendingPeriod )
+                    {
+                        Client.Send(Coords.Latitude + "|" + Coords.Longitude + "|" + Coords.Speed + "|" + Coords.Time);
+                        Coords.Counter = 0;
+                        KeepAliveCounter = 0;
                     }
                 }
                 status.Text = str;
-                Client.Send(message);
             }
+        }
+
+        private void StopAllNow(string _msg)
+        {
+            status.Text = _msg;
+            StopAllNow();
+        }
+
+        private void StopAllNow()
+        {
+            if (Client.IsConnected) { Client.Stop(); }
+            if (gps.Opened) { gps.Close(); }
         }
 
         private void Form1_Closed(object sender, System.EventArgs e)
         {
-            if (Client.IsConnected) { Client.Stop(); }
-            if (gps.Opened) { gps.Close(); }
+            StopAllNow();
             Slipknot.EnableDeviceSleep();
         }
 
         private void menuItem2_Click(object sender, EventArgs e)
         {
-            if (!Client.IsConnected) { Client = new AsynchronousClient(settings); Client.Start(); } else { Client.Stop(); }
-            if (!gps.Opened) { gps = new Gps(); gps.Open(); } else { gps.Close(); }
-            if (Client.IsConnected && gps.Opened) { GPGmenu.Text = "Stop"; }
-            else 
+            if (!Client.IsConnected)
             {
-                if (gps.Opened) gps.Close();
-                if (Client.IsConnected) Client.Stop();
+                /*Client = new AsynchronousClient(settings);*/
+                Client.Start();
+                this.status.Text = "connection to server";
+                GPGmenu.Text = "Stop";
+            }
+            else
+            {
+                Client.Stop();
                 GPGmenu.Text = "Start";
             }
+            if (gps.Opened) { gps.Close(); }
         }
 
         private void Settings_Click(object sender, EventArgs e)
         {
             FormSettings _settings = new FormSettings(settings);
             _settings.ShowDialog();
+        }
+    }
+
+    class Coordinates
+    {
+        static int size;
+
+        public int Counter { get; set; }
+
+        List<double> _latitude = new List<double>(size);
+        List<double> _longitude = new List<double>(size);
+        List<double> _speed = new List<double>(size);
+        public DateTime Time { get; set; }
+
+        public Coordinates(int _size)
+        {
+            size = _size;
+            Counter = 0;
+        }
+
+        public double Latitude
+        {
+            get 
+            {
+                double Avg = 0.0;
+                lock (_latitude) 
+                {
+                    foreach (double val in _latitude)
+                    {
+                        Avg += val;
+                    }
+                    Avg /= _latitude.Count;
+                    _latitude.Clear();
+                }
+                return Math.Round(Avg,7);
+            }
+            set { _latitude.Add(value); }
+        }
+
+        public double Longitude
+        {
+            get
+            {
+                double Avg = 0.0;
+                lock (_longitude)
+                {
+                    foreach (double val in _longitude)
+                    {
+                        Avg += val;
+                    }
+                    Avg /= _longitude.Count;
+                    _longitude.Clear();
+                }
+                return Math.Round(Avg, 7);
+            }
+            set { _longitude.Add(value); }
+        }
+
+        public double Speed
+        {        
+            get
+            {
+                double Avg = 0.0;
+                lock (_speed)
+                {
+                    foreach (double val in _speed)
+                    {
+                        Avg += val;
+                    }
+                    Avg /= _speed.Count;
+                    _speed.Clear();
+                }
+                return Math.Round(Avg, 7);
+            }
+            set { _speed.Add(value); }
         }
     }
 }

@@ -41,6 +41,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbSendingPeriod = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cbLostPackagesLimit = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -55,7 +59,7 @@
             // 
             // close
             // 
-            this.close.Text = "Close";
+            this.close.Text = "Cancel";
             this.close.Click += new System.EventHandler(this.close_Click);
             // 
             // label1
@@ -103,6 +107,7 @@
             this.tbPassword.Location = new System.Drawing.Point(115, 70);
             this.tbPassword.MaxLength = 32;
             this.tbPassword.Name = "tbPassword";
+            this.tbPassword.PasswordChar = '*';
             this.tbPassword.Size = new System.Drawing.Size(122, 21);
             this.tbPassword.TabIndex = 1;
             // 
@@ -127,17 +132,68 @@
             this.label5.Size = new System.Drawing.Size(58, 20);
             this.label5.Text = "Password";
             // 
+            // label6
+            // 
+            this.label6.Location = new System.Drawing.Point(3, 140);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(95, 20);
+            this.label6.Text = "Sending Period";
+            // 
+            // cbSendingPeriod
+            // 
+            this.cbSendingPeriod.Items.Add("1");
+            this.cbSendingPeriod.Items.Add("2");
+            this.cbSendingPeriod.Items.Add("3");
+            this.cbSendingPeriod.Items.Add("5");
+            this.cbSendingPeriod.Items.Add("10");
+            this.cbSendingPeriod.Items.Add("20");
+            this.cbSendingPeriod.Items.Add("30");
+            this.cbSendingPeriod.Items.Add("60");
+            this.cbSendingPeriod.Items.Add("120");
+            this.cbSendingPeriod.Location = new System.Drawing.Point(142, 140);
+            this.cbSendingPeriod.Name = "cbSendingPeriod";
+            this.cbSendingPeriod.Size = new System.Drawing.Size(59, 22);
+            this.cbSendingPeriod.TabIndex = 8;
+            // 
+            // label7
+            // 
+            this.label7.Location = new System.Drawing.Point(3, 111);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(125, 20);
+            this.label7.Text = "Lost Packages Limit";
+            // 
+            // cbLostPackagesLimit
+            // 
+            this.cbLostPackagesLimit.Items.Add("0");
+            this.cbLostPackagesLimit.Items.Add("1");
+            this.cbLostPackagesLimit.Items.Add("5");
+            this.cbLostPackagesLimit.Items.Add("10");
+            this.cbLostPackagesLimit.Items.Add("20");
+            this.cbLostPackagesLimit.Items.Add("30");
+            this.cbLostPackagesLimit.Items.Add("50");
+            this.cbLostPackagesLimit.Items.Add("100");
+            this.cbLostPackagesLimit.Items.Add("500");
+            this.cbLostPackagesLimit.Items.Add("1000");
+            this.cbLostPackagesLimit.Location = new System.Drawing.Point(142, 109);
+            this.cbLostPackagesLimit.Name = "cbLostPackagesLimit";
+            this.cbLostPackagesLimit.Size = new System.Drawing.Size(59, 22);
+            this.cbLostPackagesLimit.TabIndex = 8;
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(240, 268);
+            this.Controls.Add(this.cbLostPackagesLimit);
+            this.Controls.Add(this.cbSendingPeriod);
             this.Controls.Add(this.tbPassword);
             this.Controls.Add(this.tbPort);
             this.Controls.Add(this.tbLogin);
             this.Controls.Add(this.tbHost);
             this.Controls.Add(this.label5);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label4);
@@ -163,5 +219,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cbSendingPeriod;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox cbLostPackagesLimit;
     }
 }

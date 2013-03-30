@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Slipknot.cs" />
+    <None Include="Копия Client.tttt" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

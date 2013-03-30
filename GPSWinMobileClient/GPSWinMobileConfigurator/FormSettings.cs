@@ -25,8 +25,11 @@ namespace GPSWinMobileConfigurator
             _settings.Host = tbHost.Text;
             _settings.Port = tbPort.Text;
             _settings.UserName = tbLogin.Text;
-            _settings.Password = tbPassword.Text;
+            if (_settings.Password != tbPassword.Text) _settings.Password = tbPassword.Text;
+            _settings.SendingPeriod = cbSendingPeriod.SelectedItem.ToString() == "" ? 1 : int.Parse(cbSendingPeriod.SelectedItem.ToString());
+            _settings.LostPackagesLimit = cbLostPackagesLimit.SelectedItem.ToString() == "" ? 0 : int.Parse(cbLostPackagesLimit.SelectedItem.ToString());
             _settings.Save();
+            this.Close();
         }
 
         private void FormSettings_Load(object sender, EventArgs e)
@@ -35,6 +38,8 @@ namespace GPSWinMobileConfigurator
             tbPort.Text = _settings.Port;
             tbLogin.Text = _settings.UserName;
             tbPassword.Text = _settings.Password;
+            cbSendingPeriod.SelectedItem = _settings.SendingPeriod.ToString();
+            cbLostPackagesLimit.SelectedItem = _settings.LostPackagesLimit.ToString();
         }
 
         private void close_Click(object sender, EventArgs e)
