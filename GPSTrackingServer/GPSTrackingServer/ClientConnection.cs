@@ -44,6 +44,7 @@ namespace GPSTrackingServer
 
         public event ConnectionEvent AuthorizationFaild;    // Событие успешной авторизации
         public event ConnectionEvent AuthorizationSuccess;  // Событие не совсем успешной авторизации
+        public event ConnectionEvent Disconnected;           // Событие не совсем успешной авторизации
         public delegate void ConnectionEvent(ClientConnection sender, string message);   
 
         System.Timers.Timer AuthTime = new System.Timers.Timer(9000); // время на авторизацию
@@ -202,9 +203,13 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void SendAsync(SocketAsyncEventArgs e)
         {
-            bool willRaiseEvent = Sock.SendAsync(e);
-            if (!willRaiseEvent)
-                ProcessSend(e);
+            if (Sock.Connected)
+            {
+                bool willRaiseEvent = Sock.SendAsync(e);
+                if (!willRaiseEvent)
+                    ProcessSend(e);
+            }
+            else { Disconnected(this, "Client lost"); }
         }
 
         /// <summary>

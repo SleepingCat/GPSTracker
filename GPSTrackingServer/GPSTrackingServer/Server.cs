@@ -70,7 +70,7 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void KeepAlive(object sender, ElapsedEventArgs e)
         {
-            SendToAll("Still alive =)");
+            SendToAll("Still Alive =)");
         }
 
         private void AcceptCompleted(object sender, SocketAsyncEventArgs e)
@@ -80,10 +80,18 @@ namespace GPSTrackingServer
                 ClientConnection Client = new ClientConnection(e.AcceptSocket);
                 Client.AuthorizationFaild += new ClientConnection.ConnectionEvent(Client_AuthorizationFaild);
                 Client.AuthorizationSuccess += new ClientConnection.ConnectionEvent(Client_AuthorizationSuccess);
+                Client.Disconnected += new ClientConnection.ConnectionEvent(Client_disconnected);
+
                 Console.WriteLine("{0} Trying to connect", e.AcceptSocket.RemoteEndPoint);
             }
             e.AcceptSocket = null;
             AcceptAsync(AcceptAsyncArgs);
+        }
+
+        void Client_disconnected(ClientConnection sender, string message)
+        {
+            Clients.Remove(sender);
+            Console.WriteLine(message);
         }
 
         void Client_AuthorizationSuccess(ClientConnection sender, string message)

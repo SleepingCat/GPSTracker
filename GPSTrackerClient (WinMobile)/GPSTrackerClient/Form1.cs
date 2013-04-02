@@ -191,19 +191,31 @@ namespace GPSTrackerClient
 
             // call the UpdateData method via the updateDataHandler so that we
             // update the UI on the UI thread
-            //Invoke(updateDataHandler);
+            Invoke(updateDataHandler);
         }
 
         void UpdateStatus(object sender, System.EventArgs args)
         {
             //status.Text = _st;
-            if (_st == "Keep Alive =)" && settings.LostPackagesLimit > 0)
+            switch (_st)
             {
-                KeepAliveCounter++;
-                if (KeepAliveCounter > settings.SendingPeriod * settings.LostPackagesLimit) { StopAllNow("Connection lost"); }
+                case "Still Alive =)":
+                    {
+                        if (settings.LostPackagesLimit > 0)
+                        {
+                            KeepAliveCounter++;
+                            if (KeepAliveCounter > settings.SendingPeriod * settings.LostPackagesLimit) { StopAllNow("Connection lost"); }
+                        }
+                    } break;
+                case "Auth Success": { gps.Open(); status.Text="gps open"; }break;
+                case "Can't recieve. Server down":
+                case "Can't send. Server down":
+                case "Recieve Error":
+                case "Server not found":
+                case "Client inner Error":
+                case "Auth Failed": { StopAllNow(_st); } break;
+                default: status.Text = _st; break;
             }
-            else if (_st == "Auth Success") { gps.Open(); status.Text="gps open"; }
-            else if (Client.IsConnected) { StopAllNow(_st); }
         }
 
         void UpdateData(object sender, System.EventArgs args)
@@ -316,6 +328,7 @@ namespace GPSTrackerClient
 
         private void menuItem2_Click(object sender, EventArgs e)
         {
+            if (gps.Opened) { gps.Close(); }
             if (!Client.IsConnected)
             {
                 /*Client = new AsynchronousClient(settings);*/
@@ -330,7 +343,6 @@ namespace GPSTrackerClient
                 GPGmenu.Text = "Start";
                 status.Text = "Stoped";
             }
-            if (gps.Opened) { gps.Close(); }
         }
 
         private void Settings_Click(object sender, EventArgs e)
