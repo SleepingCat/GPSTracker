@@ -7,7 +7,7 @@ using System.Text;
 using Microsoft.Win32;
 using System.Security.Cryptography;
 
-namespace GPSWinMobileConfigurator
+namespace GPSTrackerClient
 {
     public class Settings
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.WindowsMobile.Location", "Microsoft.WindowsMobile.Location\Microsoft.WindowsMobile.Location.csproj", "{DB77C1EE-A383-4CD5-A107-1C7C26A9E6B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSWinMobileConfigurator", "GPSWinMobileConfigurator\GPSWinMobileConfigurator.csproj", "{53A90DE1-E2CD-41F7-8BF8-4749C221380B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSTrackerClient", "GPSTrackerClient\GPSTrackerClient.csproj", "{53A90DE1-E2CD-41F7-8BF8-4749C221380B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

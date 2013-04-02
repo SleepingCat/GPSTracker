@@ -107,8 +107,11 @@ namespace GPSTrackingServer
         /// <param name="e"></param>
         private void AcceptAsync(SocketAsyncEventArgs e)
         {
-            bool WillRiseEvent = Sock.AcceptAsync(e);
-            if (!WillRiseEvent){ AcceptCompleted(Sock,e); }
+            if (IsRun)
+            {
+                bool WillRiseEvent = Sock.AcceptAsync(e);
+                if (!WillRiseEvent) { AcceptCompleted(Sock, e); }
+            }
         }
 
         /// <summary>
@@ -152,7 +155,7 @@ namespace GPSTrackingServer
         {
             ClientConnection cl = GetDescriptorByUserName(_username);
             if (cl == null) { Console.WriteLine("Client " + _username + " not found"); }
-            else { cl.CloseConnection(); return true; }
+            else { cl.CloseConnection(); Clients.Remove(cl); return true; }
             return false;
         }
 
@@ -229,11 +232,11 @@ namespace GPSTrackingServer
         /// </summary>
         public void Start()
         {
+            IsRun = true;
             Sock.Bind(new IPEndPoint(IPAddress.Any,Port));
             Sock.Listen(50);
             AcceptAsync(AcceptAsyncArgs);
             Console.WriteLine("Server started on port {0}", Port);
-            IsRun = true;
         }
 
         /// <summary>
@@ -246,8 +249,8 @@ namespace GPSTrackingServer
                 Cl.SendAsync("Server shutdown");
                 Cl.CloseConnection();
             }
-            Sock.Close();
             IsRun = false;
+            Sock.Close();
         }
     }
 }

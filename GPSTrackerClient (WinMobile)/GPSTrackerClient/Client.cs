@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 
-namespace GPSWinMobileConfigurator
+namespace GPSTrackerClient
 {
     // State object for receiving data from remote device.
     public class StateObject
@@ -20,7 +20,7 @@ namespace GPSWinMobileConfigurator
         public StringBuilder sb = new StringBuilder();
     }
 
-    public class AsynchronousClient
+    public class Client
     {
         public delegate void ConnectionEventDelegate(string status);
         public event ConnectionEventDelegate Connected;
@@ -29,15 +29,13 @@ namespace GPSWinMobileConfigurator
 
         public bool IsConnected { get; private set; }
 
-        //Thread th;
-
         // ManualResetEvent instances signal completion.
-        private ManualResetEvent connectDone = new ManualResetEvent(false);
-        private ManualResetEvent sendDone = new ManualResetEvent(false);
-        private ManualResetEvent AuthDone = new ManualResetEvent(false);
+        private ManualResetEvent connectDone;
+        private ManualResetEvent sendDone;
+        private ManualResetEvent AuthDone;
         private Socket client;
 
-        public AsynchronousClient()
+        public Client()
         {
             IsConnected = false;
         }
@@ -52,13 +50,13 @@ namespace GPSWinMobileConfigurator
         public void Start()
         {
             settings = new Settings();
-            //IsConnected = false;
+            connectDone = new ManualResetEvent(false);
+            sendDone = new ManualResetEvent(false);
+            AuthDone = new ManualResetEvent(false);
             try
             {
                 // Establish the remote endpoint for the socket.
                 // The name of the 
-                // remote device is "host.contoso.com".
-
                 IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse(settings.Host), Convert.ToInt16(settings.Port));
 
                 // Create a TCP/IP socket.
@@ -68,26 +66,18 @@ namespace GPSWinMobileConfigurator
                 client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
                 connectDone.WaitOne();
                 if (!IsConnected) { return; }
-
-                // Receive the response from the remote device.
-                //th = new Thread(delegate()
-                //{ 
+                
                 Receive(client);
-                //});
-                //th.IsBackground = true;
-                //th.Start();
 
                 // Send test data to the remote device.
-                Send("!" + settings.UserName + "@" + settings.Password);
+                Send(client,"!" + settings.UserName + "@" + settings.Password);
 
-                //Send(client, string.Format("!{0}@{1}", settings.UserName, settings.Password));
-                //sendDone.WaitOne();
-                //AuthDone.WaitOne();
+                AuthDone.WaitOne();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Allert.ShowMessage(e.ToString());
-                Connected("Connection Error");
+                //Allert.ShowMessage("Client inner Error");
+                Connected("Client inner Error");
             }
         }
 
@@ -106,13 +96,15 @@ namespace GPSWinMobileConfigurator
 
                 // Signal that the connection has been made.
                 IsConnected = true;
+                connectDone.Set();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Allert.ShowMessage(e.Message);
+                //Allert.ShowMessage("Server not found");
+                connectDone.Set();
+                Connected("Server not found");
                 IsConnected = false;
             }
-            finally { connectDone.Set(); }
         }
 
         public void Receive(Socket client)
@@ -126,10 +118,10 @@ namespace GPSWinMobileConfigurator
                 // Begin receiving the data from the remote device.
                 client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Allert.ShowMessage(e.Message);
-                Connected("Connection Error");
+                //Allert.ShowMessage("Recieve Error");
+                Connected("Recieve Error");
                 return;
             }
         }
@@ -161,20 +153,17 @@ namespace GPSWinMobileConfigurator
                     // There might be more data, so store the data received so far.
                     state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
 
-                    if (state.sb.ToString() == "Auth Success")
-                    {
-                        
-                        //AuthDone.Set();
-                    }
+                    if (state.sb.ToString() == "Auth Success") { AuthDone.Set(); }
+                    if (state.sb.ToString() == "Auth Failed") { AuthDone.Set(); }
                     Connected(state.sb.ToString());
                     state.sb = new StringBuilder();
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Allert.ShowMessage(e.Message);
-                Connected("Connection Error");
+                //Allert.ShowMessage("Server down");
+                Connected("Can't recieve. Server down");
                 return;
             }
         }
@@ -204,28 +193,21 @@ namespace GPSWinMobileConfigurator
                 // Complete sending the data to the remote device.
                 int bytesSent = client.EndSend(ar);
                 //Console.WriteLine("Sent {0} bytes to server.", bytesSent);
-
-                
-            }
-            catch (Exception e)
-            {
-                Allert.ShowMessage(e.Message);
-                Connected("Connection Error");
-                return;
-            }
-            finally 
-            {
                 // Signal that all bytes have been sent.
                 sendDone.Set();
+            }
+            catch (Exception)
+            {
+                //Allert.ShowMessage("Server down");
+                sendDone.Set();
+                Connected("Can't send. Server down");
+                return;
             }
         }
 
         public void Stop()
         {
             // Release the socket.
-            sendDone.Set();
-            AuthDone.Set();
-            connectDone.Set();
             client.Shutdown(SocketShutdown.Both);
             client.Close();
             IsConnected = false;

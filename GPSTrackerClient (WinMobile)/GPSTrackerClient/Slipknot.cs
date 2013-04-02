@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace GPSWinMobileConfigurator
+namespace GPSTrackerClient
 {
     // взято тут http://www.pinvoke.net/default.aspx/coredll.SystemIdleTimerReset
     static class Slipknot
@@ -48,9 +48,9 @@ namespace GPSWinMobileConfigurator
             {
                 SystemIdleTimerReset();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Allert.ShowMessage(e.Message);
+                return;
             }
         }
     }

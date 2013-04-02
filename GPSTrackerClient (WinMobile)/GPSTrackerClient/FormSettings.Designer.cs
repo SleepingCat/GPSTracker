@@ -1,4 +1,4 @@
-﻿namespace GPSWinMobileConfigurator
+﻿namespace GPSTrackerClient
 {
     partial class FormSettings
     {

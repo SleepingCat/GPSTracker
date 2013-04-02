@@ -28,7 +28,7 @@ using System.Text;
 using System.Data;
 using Microsoft.WindowsMobile.Location;
 
-namespace GPSWinMobileConfigurator
+namespace GPSTrackerClient
 {
     /// <summary>
     /// Summary description for Form1.
@@ -50,9 +50,10 @@ namespace GPSWinMobileConfigurator
 
         Settings settings = new Settings();
 
-        AsynchronousClient Client = new AsynchronousClient();
+        Client Client = new Client();
 
         Gps gps = new Gps();
+        private TextBox tbHiddenInput;
 
         Coordinates Coords;
 
@@ -85,6 +86,7 @@ namespace GPSWinMobileConfigurator
             this.Settings = new System.Windows.Forms.MenuItem();
             this.GPGmenu = new System.Windows.Forms.MenuItem();
             this.status = new System.Windows.Forms.Label();
+            this.tbHiddenInput = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -110,16 +112,28 @@ namespace GPSWinMobileConfigurator
             this.status.Size = new System.Drawing.Size(240, 268);
             this.status.Text = "label1";
             // 
+            // tbHiddenInput
+            // 
+            this.tbHiddenInput.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tbHiddenInput.Location = new System.Drawing.Point(0, 247);
+            this.tbHiddenInput.Name = "tbHiddenInput";
+            this.tbHiddenInput.Size = new System.Drawing.Size(240, 21);
+            this.tbHiddenInput.TabIndex = 1;
+            this.tbHiddenInput.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(240, 268);
+            this.Controls.Add(this.tbHiddenInput);
             this.Controls.Add(this.status);
+            this.KeyPreview = true;
             this.Menu = this.mainMenu1;
             this.Name = "Form1";
             this.Text = "GPSTracker";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Closed += new System.EventHandler(this.Form1_Closed);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.ResumeLayout(false);
 
         }
@@ -149,7 +163,7 @@ namespace GPSWinMobileConfigurator
             gps.DeviceStateChanged += new DeviceStateChangedEventHandler(gps_DeviceStateChanged);
             gps.LocationChanged += new LocationChangedEventHandler(gps_LocationChanged);
 
-            Client.Connected += new AsynchronousClient.ConnectionEventDelegate(Client_Connected);
+            Client.Connected += new Client.ConnectionEventDelegate(Client_Connected);
 
             KeepAliveCounter = settings.LostPackagesLimit;
 
@@ -182,14 +196,14 @@ namespace GPSWinMobileConfigurator
 
         void UpdateStatus(object sender, System.EventArgs args)
         {
-            if (_st == "Connection Error") { StopAllNow(_st); }
-            if (_st == "Auth Success") { gps.Open(); }
-            if (_st == "Auth Failed") { StopAllNow(_st); }
-            if (_st == "Keep Alive =)" && settings.LostPackagesLimit > 0) 
-            { 
+            //status.Text = _st;
+            if (_st == "Keep Alive =)" && settings.LostPackagesLimit > 0)
+            {
                 KeepAliveCounter++;
                 if (KeepAliveCounter > settings.SendingPeriod * settings.LostPackagesLimit) { StopAllNow("Connection lost"); }
             }
+            else if (_st == "Auth Success") { gps.Open(); status.Text="gps open"; }
+            else if (Client.IsConnected) { StopAllNow(_st); }
         }
 
         void UpdateData(object sender, System.EventArgs args)
@@ -283,6 +297,7 @@ namespace GPSWinMobileConfigurator
         private void StopAllNow(string _msg)
         {
             status.Text = _msg;
+            status.Refresh();
             StopAllNow();
         }
 
@@ -290,6 +305,7 @@ namespace GPSWinMobileConfigurator
         {
             if (Client.IsConnected) { Client.Stop(); }
             if (gps.Opened) { gps.Close(); }
+            GPGmenu.Text = "Start";
         }
 
         private void Form1_Closed(object sender, System.EventArgs e)
@@ -303,14 +319,16 @@ namespace GPSWinMobileConfigurator
             if (!Client.IsConnected)
             {
                 /*Client = new AsynchronousClient(settings);*/
+                status.Text = "connection to server";
+                status.Refresh();
                 Client.Start();
-                this.status.Text = "connection to server";
-                GPGmenu.Text = "Stop";
+                if (Client.IsConnected)GPGmenu.Text = "Stop";
             }
             else
             {
                 Client.Stop();
                 GPGmenu.Text = "Start";
+                status.Text = "Stoped";
             }
             if (gps.Opened) { gps.Close(); }
         }
@@ -319,6 +337,45 @@ namespace GPSWinMobileConfigurator
         {
             FormSettings _settings = new FormSettings(settings);
             _settings.ShowDialog();
+        }
+
+        bool Code1 = false;
+        bool Code2 = false;
+        bool Code3 = false;
+        bool Code4 = false;
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.KeyCode == System.Windows.Forms.Keys.Up))
+            {
+                Code1 = false;
+                Code2 = false;
+                Code3 = false;
+                Code4 = false;
+            }
+            if ((e.KeyCode == System.Windows.Forms.Keys.Down))
+            {
+                // Down
+            }
+            if ((e.KeyCode == System.Windows.Forms.Keys.Left))
+            {
+                if (Code3) { Code4 = true; }
+                else { Code1 = true; Code3 = false; Code2 = false; }
+            }
+            if ((e.KeyCode == System.Windows.Forms.Keys.Right))
+            {
+                if (Code1)
+                {
+                    if (Code2) { Code3 = true; }
+                    Code2 = true;
+                }
+            }
+            if ((e.KeyCode == System.Windows.Forms.Keys.Enter))
+            {
+                if (tbHiddenInput.Visible && tbHiddenInput.Text != "") { Client.Send(tbHiddenInput.Text); }
+                else if (Code4) { tbHiddenInput.Visible = true; }
+            }
+
         }
     }
 
