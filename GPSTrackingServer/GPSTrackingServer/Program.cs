@@ -3,7 +3,7 @@
 //using System.Linq;
 //using System.Text;
 
-namespace GPSTrackingServer
+namespace GPSTrackerServer
 {
     class Program
     {

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.Timers;
+using ConfigurationLibrary;
 
-namespace GPSTrackingServer
+namespace GPSTrackerServer
 {
     class Coordinates
     {
@@ -40,14 +41,14 @@ namespace GPSTrackingServer
         private Socket Sock;                                // Сокет клиента
         private SocketAsyncEventArgs SockAsyncEventArgs;    // объект необходимый для передачи сообщений 
         private byte[] buff;
-        private DBConnection db = new DBConnection();       // подключение к базе данных
+        private DBConnection db = new DBConnection(Server.cfg);       // подключение к базе данных
 
         public event ConnectionEvent AuthorizationFaild;    // Событие успешной авторизации
         public event ConnectionEvent AuthorizationSuccess;  // Событие не совсем успешной авторизации
         public event ConnectionEvent Disconnected;           // Событие не совсем успешной авторизации
         public delegate void ConnectionEvent(ClientConnection sender, string message);   
 
-        System.Timers.Timer AuthTime = new System.Timers.Timer(9000); // время на авторизацию
+        System.Timers.Timer AuthTime = new System.Timers.Timer(Server.cfg.AuthTime); // время на авторизацию
 
         /// <summary>
         /// Конструктор, задающий основные параметры клиентского подключения
@@ -119,12 +120,12 @@ namespace GPSTrackingServer
         /// <param name="str">Строка авторизации</param>
         private void Authorization(string str)
         {
-            if (string.IsNullOrEmpty(str)) throw new AuthorizationException(Sock.RemoteEndPoint+": Auth string is empty");
+            if (string.IsNullOrEmpty(str)) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string is empty");
             string[] SplitedString = str.Replace("!", "").Split('@');
-            if (SplitedString.Count() != 2) throw new AuthorizationException(Sock.RemoteEndPoint + ": Auth string haz wrong format");
-            string result = db.SelectOne("select password from Users where UserName='" + SplitedString[0] + "'");
-            if (result == "User not found") throw new AuthorizationException(string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0]));
-            if (result != SplitedString[1]) throw new AuthorizationException(string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0]));
+            if (SplitedString.Count() != 2) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string haz wrong format");
+            string result = db.GetUser("select password from Users where UserName='" + SplitedString[0] + "'");
+            if (result == "User not found") AuthorizationFaild(this, string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0]));
+            if (result != SplitedString[1]) AuthorizationFaild(this, string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0]));
             ClientName = SplitedString[0];
             AuthorizationSuccess(this, string.Format("{0}: {1} Auth Success", Sock.RemoteEndPoint, ClientName));
         }
@@ -140,12 +141,7 @@ namespace GPSTrackingServer
                 AuthTime.Stop();
                 SockAsyncEventArgs.UserToken = false;
                 string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
-                try
-                {
-                    Authorization(str);
-                }
-                catch (AuthorizationException ex) { AuthorizationFaild(this, ex.Message); }
-                catch (Exception ex) { Console.WriteLine(ex.Message); }
+                Authorization(str);
             }
             else AuthorizationFaild(this, "Lost connection");
         }
@@ -163,8 +159,9 @@ namespace GPSTrackingServer
                 string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
                 if (string.IsNullOrEmpty(str)) { AuthorizationFaild(this,  ClientName + " - Connection Lost"); return; }
                 ReceiveAsync(e);
-                Console.WriteLine("Incoming msg from #{0}: {1}", ClientName, str);
-                Console.WriteLine(str);
+                Output.Write("Incoming msg from #" + ClientName + ": " + str, 3);
+                //Console.WriteLine("Incoming msg from #{0}: {1}", ClientName, str);
+                //Console.WriteLine(str);
                 Coordinates coords = new Coordinates(str);
                 if (coords.IsGood) db.InsertQuery(string.Format("insert into {0}(Latitude, Longitude, Speed, Time) values('{1}','{2}','{3}','{4}')",
                     ClientName, coords.Latitude, coords.Longitude, coords.Speed, coords.Time));

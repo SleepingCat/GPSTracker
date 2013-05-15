@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using ConfigurationLibrary;
 
 // Подключение к MySQL БД осуществляется при помощи MySQL .Net Connector, скачать который можно по ссылке ниже
 // http://dev.mysql.com/downloads/connector/net/6.6.html#downloads
 // P.S. из исходников у меня запускаться отказался, поэтому лучше качать .msi
 using MySql.Data.MySqlClient;
 
-namespace GPSTrackingServer
+namespace GPSTrackerServer
 {
-    class DBConnection
+    public class DBConnection
     {
         // Подключение БД
         protected string ConnectionString;
@@ -29,20 +30,24 @@ namespace GPSTrackingServer
             Connect();
         }
 
-        public DBConnection()
+        public DBConnection(Configuration _cfg)
         {
-            ConnectionString = "Database=GPSTracker;Data Source=192.168.1.8;User Id=GPSTracker;Password=nanodesu";
+            ConnectionString = "Database=" + _cfg.DB + ";Data Source=" + _cfg.DBhost + ";User Id=" + _cfg.DBuser + ";Password=" + _cfg.DBpassword + ";";
             Connect();
         }
 
         private void Connect()
         {
             if (string.IsNullOrEmpty(ConnectionString)) { throw new ArgumentNullException(ConnectionString); }
-            Connection = new MySqlConnection(ConnectionString);
-            Connection.Open();
+            try
+            {
+                Connection = new MySqlConnection(ConnectionString);
+                Connection.Open();
+            }
+            catch (Exception ex) { Output.Write(ex.Message, 1); }
         }
 
-        public string SelectOne(string Query)
+        public string GetUser(string Query)
         {
             try
             {
@@ -58,16 +63,12 @@ namespace GPSTrackingServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Output.Write(ex.Message, 1);
+                //Console.WriteLine(ex.Message);
                 return ex.Message;
             }
-                /*
-            finally
-            {
-                if (Connection.State == System.Data.ConnectionState.Open) { Connection.Close(); }
-            }
-                 */
         }
+
         /// <summary>
         /// Добавляет данные в таблицу
         /// </summary>
@@ -84,14 +85,9 @@ namespace GPSTrackingServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Output.Write(ex.Message, 1);
+                //Console.WriteLine(ex.Message);
             }
-                /*
-            finally
-            {
-                if (Connection.State == System.Data.ConnectionState.Open) { Connection.Close(); }
-            }
-                 */
         }
 
         public void Open() { Connection.Open(); }
@@ -101,7 +97,7 @@ namespace GPSTrackingServer
         /// Запрашивает данные из таблицы (зачем? - х.з., чтобы было)
         /// </summary>
         /// <param name="query">Select-запрос</param>
-        private void SelectQuery(string query)
+        private void GetUserList(string query)
         {
 
             MySqlConnection Connection = new MySqlConnection(ConnectionString);
@@ -110,24 +106,20 @@ namespace GPSTrackingServer
 
             try
             {
-                //Connection.Open(); //Устанавливаем соединение с базой данных.
-
                 reader = cmd.ExecuteReader();
                 while (reader.Read()) // перебираем полученные данные
                 {
                     // тут мы их куда-то запихиваем
                 }
-
-                //Connection.Close();
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine(ex.Message);
+                Output.Write(ex.Message, 1);
+                //Console.WriteLine(ex.Message);
             }
             finally
             {
                 if (reader != null) reader.Close();
-                //if (Connection.State == System.Data.ConnectionState.Open) Connection.Close();
             }
         }
     }

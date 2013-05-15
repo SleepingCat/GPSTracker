@@ -6,44 +6,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Timers;
+using ConfigurationLibrary;
 
-namespace GPSTrackingServer
+namespace GPSTrackerServer
 {
-    /// <summary>
-    /// Исключение генерируемое в случае невозможности отправки сообщения клиенту
-    /// </summary>
-    class ClientLostException : Exception
-    {
-        public override string Message
-        {
-            get
-            {
-                return "Невозможно отправить данные клиенту. Клиент отключился.";
-            }
-        }
-    }
-
-    class AuthorizationException : Exception
-    {
-        string _message = "Ошибка авторизации";
-        public AuthorizationException(string message)
-        {
-            _message = message;
-        }
-        public override string Message
-        {
-            get
-            {
-                return _message;
-            }
-        }
-    }
 
     class Server
     {
         public bool IsRun { get; set; }
-        // Порт сервера
-        int Port = 4505;
+
+        public static Configuration cfg = null;
+        FillConfiguration fcfg = new FillConfiguration();
 
         // Сокет для принятия подключений
         private Socket Sock; 
@@ -54,13 +27,27 @@ namespace GPSTrackingServer
 
         public Server()
         {
+            cfg = fcfg.ReadConfigFile();
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             AcceptAsyncArgs = new SocketAsyncEventArgs();
             AcceptAsyncArgs.Completed += AcceptCompleted;
-            System.Timers.Timer timer = new System.Timers.Timer(10000);
+            System.Timers.Timer timer = new System.Timers.Timer(cfg.KeepAliveTime);
             timer.Elapsed += KeepAlive;
             timer.Enabled = true;
             IsRun = false;
+        }
+
+        /// <summary>
+        /// Запускает сервер
+        /// </summary>
+        public void Start()
+        {
+            IsRun = true;
+            Sock.Bind(new IPEndPoint(IPAddress.Any, cfg.Port));
+            Sock.Listen(cfg.MaxClients);
+            AcceptAsync(AcceptAsyncArgs);
+            Output.Write("Server started on port" + cfg.Port, 2);
+            //Console.WriteLine("Server started on port {0}", cfg.Port);
         }
 
         /// <summary>
@@ -82,23 +69,26 @@ namespace GPSTrackingServer
                 Client.AuthorizationSuccess += new ClientConnection.ConnectionEvent(Client_AuthorizationSuccess);
                 Client.Disconnected += new ClientConnection.ConnectionEvent(Client_disconnected);
 
-                Console.WriteLine("{0} Trying to connect", e.AcceptSocket.RemoteEndPoint);
+                Output.Write(e.AcceptSocket.RemoteEndPoint + "Trying to connect", 2);
+                //Console.WriteLine("{0} Trying to connect", e.AcceptSocket.RemoteEndPoint);
             }
             e.AcceptSocket = null;
-            AcceptAsync(AcceptAsyncArgs);
+            if(Clients.Count < cfg.MaxClients) AcceptAsync(AcceptAsyncArgs);
         }
 
         void Client_disconnected(ClientConnection sender, string message)
         {
             Clients.Remove(sender);
-            Console.WriteLine(message);
+            //Console.WriteLine(message);
+            Output.Write(message, 2);
         }
 
         void Client_AuthorizationSuccess(ClientConnection sender, string message)
         {
             Clients.Add(sender);
             sender.SendAsync("Auth Success");
-            Console.WriteLine(message);
+            //Console.WriteLine(message);
+            Output.Write(message, 2);
         }
 
         void Client_AuthorizationFaild(ClientConnection sender, string message)
@@ -106,7 +96,8 @@ namespace GPSTrackingServer
             sender.SendAsync("Auth Failed");
             sender.CloseConnection();
             Clients.Remove(sender);
-            Console.WriteLine(message);
+            //Console.WriteLine(message);
+            Output.Write(message, 2);
         }       
         
         /// <summary>
@@ -134,9 +125,10 @@ namespace GPSTrackingServer
                 {
                     Cl.SendAsync(data);
                 }
-                catch (ClientLostException ex)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Output.Write(ex.Message, 1);
+                    //Console.WriteLine(ex.Message);
                     Clients.Remove(Cl);
                 }
             }
@@ -152,17 +144,17 @@ namespace GPSTrackingServer
             return null;
         }
 
-        private void Send(string _usrname, string _msg )
+        private void Send(string _username, string _msg )
         {
-            ClientConnection cl = GetDescriptorByUserName(_usrname);
-            if (cl == null) { Console.WriteLine("Client " + _usrname + " not found"); }
+            ClientConnection cl = GetDescriptorByUserName(_username);
+            if (cl == null) { Output.Write("Client " + _username + " not found", 2); /*Console.WriteLine("Client " + _username + " not found");*/ }
             else { cl.SendAsync(_msg); }
         }
 
         private bool KickUser(string _username)
         {
             ClientConnection cl = GetDescriptorByUserName(_username);
-            if (cl == null) { Console.WriteLine("Client " + _username + " not found"); }
+            if (cl == null) { Output.Write("Client " + _username + " not found", 2); /*Console.WriteLine("Client " + _username + " not found");*/ }
             else { cl.CloseConnection(); Clients.Remove(cl); return true; }
             return false;
         }
@@ -173,7 +165,8 @@ namespace GPSTrackingServer
             {
                 foreach (ClientConnection cl in Clients)
                 {
-                    Console.WriteLine("\t " + cl.ClientName);
+                    Output.Write("\t " + cl.ClientName, 0);
+                    //Console.WriteLine("\t " + cl.ClientName);
                 }
             }
         }
@@ -233,18 +226,6 @@ namespace GPSTrackingServer
                 default: return "Command not found";
             }
             return "Done";
-        }
-
-        /// <summary>
-        /// Запускает сервер
-        /// </summary>
-        public void Start()
-        {
-            IsRun = true;
-            Sock.Bind(new IPEndPoint(IPAddress.Any,Port));
-            Sock.Listen(50);
-            AcceptAsync(AcceptAsyncArgs);
-            Console.WriteLine("Server started on port {0}", Port);
         }
 
         /// <summary>
