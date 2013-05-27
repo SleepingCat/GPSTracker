@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	
+	<link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css"/>
+
+	<script src="http://code.jquery.com/jquery.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+	<script src="./files/js/jquery.cookie.js"></script>	
+	<script src="./files/js/myJs.js"></script>
+	
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+	  .bordr{
+	  border:1px #eee solid;
+	  border-radius:5px;}
+	  
+	  .bordr div{
+		min-height:100px;
+	  }
+	  .bordr a{
+		margin-bottom:10px;
+	  }
+	  
+    </style>
+
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="./files/img/iconmonstr-map-6-icon.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./files/img/iconmonstr-map-6-icon.png">
+                    <link rel="apple-touch-icon-precomposed" href="./files/img/iconmonstr-map-6-icon.png">
+                                   <link rel="shortcut icon" href="./files/img/iconmonstr-map-6-icon.png">
+  </head>
+
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./index.html">GPSTracker</a>
+          <div class="nav-collapse collapse" id="MyMarker">
+            <ul class="nav">
+              <li><a href="./maps.html">Карты</a></li>
+			  <li class="active"><a href="#">Скачать</a></li>
+            </ul>
+            <form class="navbar-form pull-right" id="MyAuthForm" action="./login.php" method="POST">
+              <input class="span2" name="username" type="text" placeholder="Логин">
+              <input class="span2" name="psw" type="password" placeholder="Пароль">
+              <button type="submit" class="btn">Вход</button>
+            </form>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit" align="center">
+        <h1>Скачать</h1>
+      </div>
+
+      <!-- Example row of columns -->
+
+	  
+	  <div class="row">
+        <div class="span4" align="center">
+		<div class="bordr">
+				  		  <div>
+          <h2>Клиент</h2>
+		  <p> Клиеннт WinMobile 6.5 Отправляет данные на сервер.</p>
+		  		  </div>
+		  <a class="btn btn-primary"><i class="icon-download-alt"></i> Скачать</a>
+
+		</div>
+        </div>
+        <div class="span4" align="center">
+		<div class="bordr">
+		  <div>
+          <h2>Сервер</h2>
+		  <p> Получает данные от клиента и записывает их в БД</p>	
+		  </div>
+		  <a class="btn btn-primary"><i class="icon-download-alt"></i> Скачать</a>
+
+		</div>
+        </div>
+        <div class="span4" align="center">
+		<div class="bordr">
+		<div>
+          <h2>Скрипт</h2>
+		  <p> Отображает путь на картах <p>
+		  		  </div>
+		  <a class="btn btn-primary"><i class="icon-download-alt"></i> Скачать</a>
+
+		</div>
+        </div>
+      </div>
+	  <hr>
+	  <div class="row">
+	  <div class="span12" align="center">
+	  <button class="btn btn-large btn-success">
+		<p style="padding-top: 10px;"><i class="icon-download-alt icon-white" style="margin-top:3px"></i> Скачать одним архивом Клиент сервер и скрипт</p>
+	  </button>
+      </div>
+	  </div>
+      <hr>
+
+
+    <div id="footer" style="bottom:1px;position:absolute;"> 
+	<hr>
+      <div class="container">
+        <p class="muted credit">&copy Masalin A. 2013</p>
+      </div>
+    </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster 
+    <script src="./files/js/jquery.js"></script>
+    <script src="./files/js/bootstrap-transition.js"></script>
+    <script src="./files/js/bootstrap-alert.js"></script>
+    <script src="./files/js/bootstrap-modal.js"></script>
+    <script src="./files/js/bootstrap-dropdown.js"></script>
+    <script src="./files/js/bootstrap-scrollspy.js"></script>
+    <script src="./files/js/bootstrap-tab.js"></script>
+    <script src="./files/js/bootstrap-tooltip.js"></script>
+    <script src="./files/js/bootstrap-popover.js"></script>
+    <script src="./files/js/bootstrap-button.js"></script>
+    <script src="./files/js/bootstrap-collapse.js"></script>
+    <script src="./files/js/bootstrap-carousel.js"></script>
+    <script src="./files/js/bootstrap-typeahead.js"></script>
+    -->
+  </body>
+</html>

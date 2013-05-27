@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GPSTracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	
+	<link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css"/>
+
+	<script src="http://code.jquery.com/jquery.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+	<script src="./files/js/jquery.cookie.js"></script>	
+	<script src="./files/js/myJs.js"></script>
+	
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+	  .thumbnail{
+		color:#333;
+	  }
+	  .thumbnail:hover{
+		text-decoration:none;
+		color:#333;
+	  }
+    </style>
+
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="./files/img/iconmonstr-map-6-icon.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./files/img/iconmonstr-map-6-icon.png">
+                    <link rel="apple-touch-icon-precomposed" href="./files/img/iconmonstr-map-6-icon.png">
+                                   <link rel="shortcut icon" href="./files/img/iconmonstr-map-6-icon.png">
+  </head>
+
+<body>
+  <!-- sample modal content -->
+  <div style="display: none;" id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	  <h3 id="myModalLabel">Войти</h3>
+	</div>
+
+	<div class="modal-body" >
+	<form action = "sdf" method="POST" class="form-horizontal">
+		<div class="control-group">
+			<label class="control-label" for="inputEmail">Логин</label>
+			<div class="controls">
+				<input type="text" id="inputEmail" placeholder="Логин">
+			</div>
+			<label class="control-label" for="inputEmail">Пароль</label>
+			<div class="controls">
+				<input type="text" id="inputEmail" placeholder="Пароль">
+			</div>
+			
+		</div>
+	</div>
+			
+	<div class="modal-footer"><button type="submit" class="btn btn-primary">Войти</button>
+	</form>
+	</div>
+
+  </div>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./index.html">GPSTracker</a>
+          <div class="nav-collapse collapse" id="MyMarker">
+            <ul class="nav">
+              <li class="active"><a href="#">Карты</a></li>
+			  <li><a href="./download.html">Скачать</a></li>
+            </ul>
+            <form class="navbar-form pull-right" id="MyAuthForm" action="./login.php" method="POST">
+              <input class="span2" name="username" type="text" placeholder="Логин">
+              <input class="span2" name="psw" type="password" placeholder="Пароль">
+              <button type="submit" class="btn">Вход</button>
+            </form>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Example row of columns -->
+	  <div class="row">
+        <div class="span6" align="center">
+		<a href="YandexMaps.php" class="thumbnail">
+		<img class="featurette-image pull-center" src="./files/img/Maps_Yandex1.jpg">
+          <h2>Yandex карты</h2>
+		</a>
+	  
+        </div>
+        <div class="span6" align="center">
+		<a href="GoogleMaps.php" class="thumbnail">
+		  <img class="featurette-image pull-center" src="./files/img/google.png" >
+		  <h2>Google Карты</h2>
+		</a>
+       </div>
+      </div>
+
+    <div id="footer" style="bottom:1px;position:absolute;"> 
+	<hr>
+      <div class="container">
+        <p class="muted credit">&copy Masalin A. 2013</p>
+      </div>
+    </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster 
+    <script src="./files/js/jquery.js"></script>
+    <script src="./files/js/bootstrap-transition.js"></script>
+    <script src="./files/js/bootstrap-alert.js"></script>
+    <script src="./files/js/bootstrap-modal.js"></script>
+    <script src="./files/js/bootstrap-dropdown.js"></script>
+    <script src="./files/js/bootstrap-scrollspy.js"></script>
+    <script src="./files/js/bootstrap-tab.js"></script>
+    <script src="./files/js/bootstrap-tooltip.js"></script>
+    <script src="./files/js/bootstrap-popover.js"></script>
+    <script src="./files/js/bootstrap-button.js"></script>
+    <script src="./files/js/bootstrap-collapse.js"></script>
+    <script src="./files/js/bootstrap-carousel.js"></script>
+    <script src="./files/js/bootstrap-typeahead.js"></script>
+    -->
+  </body>
+</html>
