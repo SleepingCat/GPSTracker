@@ -123,7 +123,7 @@ namespace GPSTrackerServer
             if (string.IsNullOrEmpty(str)) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string is empty");
             string[] SplitedString = str.Replace("!", "").Split('@');
             if (SplitedString.Count() != 2) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string haz wrong format");
-            string result = db.GetUser("select password from Users where UserName='" + SplitedString[0] + "'");
+            string result = db.GetUser("select Password from Users where UserName='" + SplitedString[0] + "'");
             if (result == "User not found") AuthorizationFaild(this, string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0]));
             if (result != SplitedString[1]) AuthorizationFaild(this, string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0]));
             ClientName = SplitedString[0];
