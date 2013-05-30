@@ -1,0 +1,17 @@
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ResGen.read.1.tlog
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ResGen.write.1.tlog
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\bin\Debug\ServerConfigurator.exe
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\bin\Debug\ServerConfigurator.pdb
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\bin\Debug\ConfigLibrary.dll
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\bin\Debug\ConfigLibrary.pdb
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.exe
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.pdb
+D:\GPSTracker\GPSTrackingServer\GPSTrackingServer\bin\Debug\ServerConfigurator.exe
+D:\GPSTracker\GPSTrackingServer\GPSTrackingServer\bin\Debug\ServerConfigurator.pdb
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.Settings.resources
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.AddUser.resources
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.Properties.Resources.resources
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.Users.resources
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.AddFriends.resources
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.UserEditPassword.resources

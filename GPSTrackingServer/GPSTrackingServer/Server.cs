@@ -27,11 +27,12 @@ namespace GPSTrackerServer
 
         public Server()
         {
+            Console.Title = "GPSTrackingServer";
             cfg = fcfg.ReadConfigFile();
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             AcceptAsyncArgs = new SocketAsyncEventArgs();
             AcceptAsyncArgs.Completed += AcceptCompleted;
-            System.Timers.Timer timer = new System.Timers.Timer(cfg.KeepAliveTime);
+            System.Timers.Timer timer = new System.Timers.Timer(cfg.KeepAliveTime*100);
             timer.Elapsed += KeepAlive;
             timer.Enabled = true;
             IsRun = false;

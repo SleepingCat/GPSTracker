@@ -48,7 +48,7 @@ namespace GPSTrackerServer
         public event ConnectionEvent Disconnected;           // Событие не совсем успешной авторизации
         public delegate void ConnectionEvent(ClientConnection sender, string message);   
 
-        System.Timers.Timer AuthTime = new System.Timers.Timer(Server.cfg.AuthTime); // время на авторизацию
+        System.Timers.Timer AuthTime = new System.Timers.Timer(Server.cfg.AuthTime*100); // время на авторизацию
 
         /// <summary>
         /// Конструктор, задающий основные параметры клиентского подключения
