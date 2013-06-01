@@ -11,18 +11,18 @@ namespace ServerConfigurator
 {
     public partial class AddFriends : Form
     {
-        string id;
+        string name;
 
-        public AddFriends(string _id)
+        public AddFriends(string _name)
         {
             InitializeComponent();
-            id = _id;
+            name = _name;
             FillData();
         }
 
         void FillData()
         {
-            User u = Program._dbConnection.GetUser(id);
+            User u = Program._dbConnection.GetUser(name);
             this.tbSecret.Text = u.Invite;
             this.Text = u.Name;
             string[] friends = u.Friends.Split(';');
@@ -37,8 +37,8 @@ namespace ServerConfigurator
 
         private void bGenerate_Click(object sender, EventArgs e)
         {
-            this.tbSecret.Text = Program._dbConnection.CreateInvite(id);
-            Program._dbConnection.ExecuteQuery("Update Users set Invite='" + this.tbSecret.Text + "' where UserID='" + id + "'");
+            this.tbSecret.Text = Program._dbConnection.CreateInvite(name);
+            Program._dbConnection.ExecuteQuery("Update Users set Invite='" + this.tbSecret.Text + "' where UserName='" + name + "'");
         }
 
         private void bAdd_Click(object sender, EventArgs e)
@@ -54,7 +54,7 @@ namespace ServerConfigurator
 
         private void bSave_Click(object sender, EventArgs e)
         {
-            Program._dbConnection.AddFriends(this.id, this.clbFriends);
+            Program._dbConnection.AddFriends(this.name, this.clbFriends);
         }
 
         bool AllChecked = false;

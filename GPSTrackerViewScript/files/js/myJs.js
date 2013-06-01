@@ -1,8 +1,8 @@
 $(document).ready(function () {
-$("[rel='tooltip']").tooltip();
+//$("[rel='tooltip']").tooltip();
 if($.cookie('auth') == '1'){
 	$('#MyAuthForm').remove();
-	var myButton ='<p class="navbar-text pull-right"> Desu &nbsp <a id="logout" class="btn pull-right">Выйти</a></p>' ;
+	var myButton ='<p class="navbar-text pull-right"> <span>' + $.cookie('username') + '&nbsp </span><a id="logout" class="btn">Выйти</a></p>' ;
 	$('#MyMarker').append(myButton);
 	}
 $('#logout').click(function() 

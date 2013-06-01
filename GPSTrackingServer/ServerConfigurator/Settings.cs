@@ -102,22 +102,20 @@ namespace ServerConfigurator
         private void создатьПустуюБазуДанныхToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string query = @"
-                CREATE TABLE `NewTable` (
-                `UserName`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-                `Password`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-                `Invite`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-                `Friends`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
-                `UserID`  int(11) NOT NULL AUTO_INCREMENT ,
-                `Permissions`  int(1) NOT NULL DEFAULT 0 ,
-                PRIMARY KEY (`UserID`, `UserName`)
-                )
-                ENGINE=MyISAM
-                DEFAULT CHARACTER SET=utf8 COLLATE=utf8_bin
-                AUTO_INCREMENT=5
-                CHECKSUM=0
-                ROW_FORMAT=DYNAMIC
-                DELAY_KEY_WRITE=0
-                ;go;";
+            CREATE TABLE `Users` (
+            `UserName`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+            `Password`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+            `Invite`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+            `Friends`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+            `UserID`  int(11) NOT NULL AUTO_INCREMENT ,
+            `Permissions`  int(1) NOT NULL DEFAULT 0 ,
+            PRIMARY KEY (`UserID`, `UserName`)
+            )
+            ENGINE=InnoDB
+            DEFAULT CHARACTER SET=utf8 COLLATE=utf8_bin
+            AUTO_INCREMENT=7
+            ROW_FORMAT=DYNAMIC;go;
+            ";
             Program._dbConnection.ExecuteQuery(query);
         }
 

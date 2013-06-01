@@ -46,7 +46,7 @@ namespace ServerConfigurator
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            AddFriends addfr = new AddFriends(this.dataGridView1.CurrentRow.Cells["UserID"].Value.ToString());
+            AddFriends addfr = new AddFriends(this.dataGridView1.CurrentRow.Cells["UserName"].Value.ToString());
             addfr.ShowDialog();
             _bs.DataSource = Program._dbConnection.LoadUsersTable();
             this.dataGridView1.Update();

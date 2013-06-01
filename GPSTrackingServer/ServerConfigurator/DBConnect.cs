@@ -96,7 +96,7 @@ namespace ServerConfigurator
         {
             
         }
-
+/*
         public string AddUser(string Username, string password, string secret)
         {
             try
@@ -126,6 +126,35 @@ namespace ServerConfigurator
             catch (Exception ex) {return ex.Message;}
             return "Пользователь создан";
         }
+*/
+
+        public string AddUser(string Username, string password, string secret)
+        {
+            try
+            {
+                string query = "Insert into Users (UserName, Password, Invite) values('" + Username + "','" + password + "','" + secret + "')";
+                MySqlCommand Command = new MySqlCommand(query, Connection);
+                Connection.Open(); //Устанавливаем соединение с базой данных.
+                Command.ExecuteNonQuery();
+
+                query = "CREATE TABLE `" + Username + @"` (
+                `Latitude`  decimal(10,7) NULL DEFAULT NULL ,
+                `Longitude`  decimal(10,7) NULL DEFAULT NULL ,
+                `Speed`  decimal(10,7) NULL DEFAULT NULL ,
+                `Time`  datetime NULL DEFAULT NULL 
+                )
+                ENGINE=InnoDB
+                DEFAULT CHARACTER SET=utf8 COLLATE=utf8_bin
+                ROW_FORMAT=FIXED
+                ;go;";
+
+                Command = new MySqlCommand(query, Connection);
+                Command.ExecuteNonQuery();
+                Connection.Close(); //Обязательно закрываем соединение!
+            }
+            catch (Exception ex) { return ex.Message; }
+            return "Пользователь создан";
+        }
 
         public void ChangePassword(string UserID, string password)
         {
@@ -151,18 +180,43 @@ namespace ServerConfigurator
             return invite;
         }
         */
-        public void AddFriends(string UserID, CheckedListBox friendsList)
+        public void AddFriends(string uname, CheckedListBox friendsList)
         {
             string friends = "";
             foreach (User u in friendsList.Items)
             {
-                friends += u.id + ";";
+                friends += u.Name + ";";
             }
-            string query = "update Users set Friends='" + friends + "' where UserID = '" + UserID + "'";
+            string query = "update Users set Friends='" + friends + "' where Username = '" + uname + "'";
             this.ExecuteQuery(query);
         }
 
-
+        public User GetUser(string name)
+        {
+            if (string.IsNullOrEmpty(name)) { return null; }
+            User u = new User();
+            try
+            {
+                string query = "select UserId, UserName, Invite, Friends from Users where UserName='" + name + "'";
+                Connection = new MySqlConnection("Database=" + Program.cfg.DB + ";Data Source=" + Program.cfg.DBhost + ";User Id=" + Program.cfg.DBuser + ";Password=" + Program.cfg.DBpassword + ";");
+                Connection.Open();
+                MySqlCommand Command = new MySqlCommand(query, Connection);
+                MySqlDataReader rd = Command.ExecuteReader();
+                rd.Read();
+                u.id = rd.GetString(0);
+                u.Name = rd.GetString(1);
+                u.Invite = rd.GetValue(2).ToString();
+                u.Friends = rd.GetValue(3).ToString();
+                return u;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally { Connection.Close(); }
+            return null;
+        }
+        /*
         public User GetUser(string id)
         {
             if (string.IsNullOrEmpty(id)) { return null; }
@@ -188,13 +242,13 @@ namespace ServerConfigurator
             finally { Connection.Close();}
             return null;
         }
-
+        */
         public string GetUserIDbySecret(string secret)
         {
             try
             {
                 string result = null;
-                string query = "Select UserID from Users where Invite='" + secret + "'";
+                string query = "Select UserName from Users where Invite='" + secret + "'";
                 Connection = new MySqlConnection("Database=" + Program.cfg.DB + ";Data Source=" + Program.cfg.DBhost + ";User Id=" + Program.cfg.DBuser + ";Password=" + Program.cfg.DBpassword + ";");
                 Connection.Open();
                 MySqlCommand Command = new MySqlCommand(query, Connection);

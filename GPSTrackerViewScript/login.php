@@ -11,7 +11,7 @@ require_once("./files/DB/DBConnection.php");
 	{
 		session_start();
 		$_SESSION['username'] = $username;
-		SetCookie("username",$usename);
+		SetCookie("username",$username);
 		SetCookie("auth",1);
 		header('Location: '.$_SERVER['HTTP_REFERER']);
 	}
