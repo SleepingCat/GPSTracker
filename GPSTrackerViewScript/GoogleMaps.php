@@ -1,15 +1,20 @@
 <?
+// запускаем сессию
 session_start();
+// функция удаляет пустые элементы массива
 function ArrayTrim(&$a)
 {
 	foreach($a as $k => $v)
 	if ($v=='') unset($a[$k]);
 	return $a;
 }
+
+// проверяем залогинился ли пользователь
 if(!(isset($_SESSION['username']) && ($_COOKIE['auth'] == "1"))){session_destroy(); Die("Авторизуйтесь!");}
 require_once("./files/DB/DBConnection.php");
 $username = $_SESSION['username'];
 
+// получаем друзей пользователя, друзья в данном случае - те пользователи чьи маршруты можно просматривать и для каждого из них получаем координаты перемещения
 $query = @mysql_query("SELECT Friends FROM `Users` WHERE UserName = '".$username."'") or die (mysql_error());
 $friendsStr = @mysql_fetch_array($query);
 $friends = ArrayTrim(explode(";",$friendsStr[0]));
@@ -25,10 +30,6 @@ for($i=0;$i<count($friends);$i++)
 		$coords[$friends[$i]][] = $result;
 	}
 }
-//$_SESSION['coords'] = $coords;
-//echo "<pre>";
-//print_r($coords);
-//echo "</pre>";
 ?>
 
 <!DOCTYPE html>
@@ -41,17 +42,25 @@ for($i=0;$i<count($friends);$i++)
     <meta name="author" content="">
 	
 	<link rel="stylesheet" type="text/css" href="./files/css/reset-min.css">
+	<link rel="stylesheet" type="text/css" href="./files/css/myMaps.css">
 	
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="./files/js/jquery.cookie.js"></script>
 	<script src="./files/js/myJs.js"></script>
-	
+
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	
+	    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="./files/img/iconmonstr-map-6-icon.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./files/img/iconmonstr-map-6-icon.png">
+                    <link rel="apple-touch-icon-precomposed" href="./files/img/iconmonstr-map-6-icon.png">
+                                   <link rel="shortcut icon" href="./files/img/iconmonstr-map-6-icon.png">
     <script>
       var map;
 	  var color = '#FFFF00';
       function initialize() {
 		<?php
+		// генерируем карту и линию по координатам
         echo "\n\t\tvar myLatLng = new google.maps.LatLng(".$coords[key($coords)][0]['Latitude'].",".$coords[key($coords)][0]['Longitude'].")\n";
         echo "\t\t var mapOptions = {
           zoom: 17,
@@ -94,139 +103,16 @@ for($i=0;$i<count($friends);$i++)
 	   {
 			 $('.removeCB')
 	   }	
-	  //function d2(var rowName){}
     </script>
-	
-	<style>
-		.top 
-		{
-			height: 50px;
-			background: #ccc; /* Для старых браузров */
-			background: -moz-linear-gradient(top, #fff, #aaa); /* Firefox 3.6+ */
-			/* Chrome 1-9, Safari 4-5 */
-			background: -webkit-gradient(linear, left top, left bottom, 
-						color-stop(0%,#fff), color-stop(100%,#aaa));
-			/* Chrome 10+, Safari 5.1+ */
-			background: -webkit-linear-gradient(top, #fff, #aaa);
-			background: -o-linear-gradient(top, #fff, #aaa); /* Opera 11.10+ */
-			background: -ms-linear-gradient(top, #fff, #aaa); /* IE10 */
-			background: linear-gradient(top, #fff, #aaa); /* CSS3 */ 
-			border-bottom: 1px solid #333;
-
-		}
-		.column
-		{
-			position:absolute;
-			bottom:51px;
-			top:51px;
-		}
-		.map 
-		{
-			min-width:600px;
-			left:0;
-			right:380px;
-		}
-		.navbar 
-		{
-			width:380px;
-			min-width:380px;
-			right:0;
-			background: #eee;
-		}
-		.foot 
-		{
-			position:absolute;
-			height: 50px;
-			bottom:0;
-			width:100%;
-			background:#eee;
-			border-top:1px solid #333;
-		}
-		.navbar-container
-		{
-			margin:10px;
-			padding:5px;
-			border:1px solid #ddd;
-			border-radius:5px;
-		}
-		#map-canvas
-		{
-			min-width:300px;
-			min-height:300px;
-			width:100%;
-			height:100%;
-			border-right:1px solid #333;
-		}
-		#MyMarker
-		{
-			position:relative;
-			Color:#333;
-			padding:12px 12px;
-			height:auto;
-		}
-		#MyMarker span
-		{
-			position:relative;
-			top:4px;
-		}
-		#MyMarker a
-		{
-			margin:0;
-			position:relative;
-			border:1px solid #888;
-			padding:3px;
-			background: #fff; /* Для старых браузров */
-			background: -moz-linear-gradient(top, #fff, #ccc); /* Firefox 3.6+ */
-			/* Chrome 1-9, Safari 4-5 */
-			background: -webkit-gradient(linear, left top, left bottom, 
-						color-stop(0%,#fff), color-stop(100%,#ccc));
-			/* Chrome 10+, Safari 5.1+ */
-			background: -webkit-linear-gradient(top, #fff, #ccc);
-			background: -o-linear-gradient(top, #fff, #ccc); /* Opera 11.10+ */
-			background: -ms-linear-gradient(top, #fff, #ccc); /* IE10 */
-			background: linear-gradient(top, #fff, #ccc); /* CSS3 */ 
-
-			border-radius:5px;
-			display:block;
-			float:right;
-			box-shadow: 2px 3px 0px rgba(0,0,0,0.5); /* Параметры тени */
-		}
-			#MyMarker a:hover
-		{
-			left:1px;
-			top:1px;
-			box-shadow: 1px 2px 0px rgba(0,0,0,0.5); /* Параметры тени */
-			cursor:pointer;
-		}
-		.navbar-container table
-		{
-			width:100%;
-			border-collapse: separate;
-			border-spacing:2px 2px;
-			border:1px solid #ddd;
-		}
-		.white-background
-		{
-			background:#FFF;
-		}
-		.users tr
-		{
-			border:1px solid white;
-		}
-		.users td,.users th
-		{
-			border:1px solid #ddd;
-			background:#eee;
-			text-align:center;
-		}
-	</style>
 </head>
 <body onload="initialize()">
 	<div class="main" align="center">
 		<div class="top" align = "right">
+			<div id="MyLogo"><a href="./index.html">GPSTracker</a></div>
 			<div id="MyMarker">
 				<div id="MyAuthForm"></div>
 			</div>
+			
 		</div>
 		<div class="map column">
 			<div id="map-canvas"></div>
@@ -266,6 +152,7 @@ for($i=0;$i<count($friends);$i++)
 				<table class="users white-background">
 				<tr><th>user</th><th>points</th><th>Цвет</th><th>Удалить</th></tr>
 				<?php  
+				// тут генерируется табличка с пользователями
 				foreach($coords as $key => $val)
 				{
 					echo "<tr id=".$key.">\n
@@ -294,8 +181,7 @@ for($i=0;$i<count($friends);$i++)
 			</form>
 			</div>
 		</div>
-		<div class="foot">
-		</div>
+		<div class="foot" align="left"><div style="position:relative;"> <p class="MyCopyright">&copy Masalin A. 2013</p></div></div>
 	</div>
 </body>
 </html>

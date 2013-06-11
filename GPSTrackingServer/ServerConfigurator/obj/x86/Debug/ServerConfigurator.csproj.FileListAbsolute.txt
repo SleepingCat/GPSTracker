@@ -1,6 +1,3 @@
-D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ResGen.read.1.tlog
-D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ResGen.write.1.tlog
 D:\GPSTracker\GPSTrackingServer\ServerConfigurator\bin\Debug\ServerConfigurator.exe
 D:\GPSTracker\GPSTrackingServer\ServerConfigurator\bin\Debug\ServerConfigurator.pdb
 D:\GPSTracker\GPSTrackingServer\ServerConfigurator\bin\Debug\ConfigLibrary.dll
@@ -15,3 +12,5 @@ D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigura
 D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.Users.resources
 D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.AddFriends.resources
 D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.UserEditPassword.resources
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.csprojResolveAssemblyReference.cache
+D:\GPSTracker\GPSTrackingServer\ServerConfigurator\obj\x86\Debug\ServerConfigurator.csproj.GenerateResource.Cache

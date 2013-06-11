@@ -1,4 +1,8 @@
-﻿using System;
+﻿//--------------------------------------------------------------------
+// класс вывходных сообщений сервера
+// выводит системные сообщения в консоль сервера и записывает из в лог
+//--------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,29 +14,10 @@ namespace GPSTrackerServer
 {
     public class Output
     {
-        /* private Log log;
-
-        private Configuration cfg;
-        public Output(Configuration _cfg)
-        { 
-            cfg = _cfg;
-
-        }
-
-        public Output()
-        {
-            cfg = Server.cfg;
-            log = new Log(cfg.LogPath);
-        }
-         * */
-        // 0 - console commands
-        // 1 - error
-        // 2 - system
-        // 3 - client msg
         /// <summary>
-        /// 
+        /// выводит сообщения в консоль и(или) записывает их в лог
         /// </summary>
-        /// <param name="_message"></param>
+        /// <param name="_message">сообщение</param>
         /// <param name="_msgCode">        
         /// 0 - console commands
         /// 1 - error
@@ -57,24 +42,34 @@ namespace GPSTrackerServer
             }
         }
 
+        /// <summary>
+        /// выводит сообщение в консоль
+        /// </summary>
+        /// <param name="_msg">сообщение</param>
         private static void WriteConsole(string _msg)
         {
             if (Server.cfg.Console) Console.WriteLine(_msg);
         }
 
+        /// <summary>
+        /// пишет сообщение в лог
+        /// </summary>
+        /// <param name="_msg">сообщение</param>
         private static void WriteLog(string _msg)
         {
-            //if (log == null) { log = new Log(cfg.LogPath); }
             if (Server.cfg.Log) { Log.Write(_msg); }
         }
     }
+
+    /// <summary>
+    /// ведет лог работы сервера
+    /// </summary>
     public static class Log
     {
-        /*
-        private string logPath;
-        public Log(string _logPath) { logPath = _logPath; }
-        */
-         
+        /// <summary>
+        /// записывает в лог-файл
+        /// </summary>
+        /// <param name="lines">сообщение</param>
         public static void Write(string lines)
         {
             StreamWriter file = new StreamWriter(Server.cfg.LogPath, true);

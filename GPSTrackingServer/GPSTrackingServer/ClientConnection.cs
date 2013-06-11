@@ -8,18 +8,22 @@ using ConfigurationLibrary;
 
 namespace GPSTrackerServer
 {
+    /// <summary>
+    /// класс контейнер координат
+    /// </summary>
     class Coordinates
     {
-        public bool IsGood { get; private set; }
-        private string _datetime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-        public string Time { get { return _datetime; } }
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
-        public string Speed { get; set; }
+        public bool IsGood { get; private set; }                                    // если истинно, то полученное от клиента сообщение в правильном формате и содержит координаты 
+        private string _datetime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");    // получает значение даты и времени сервера (именно они записываются в БД, а не полученные от пользователя)
+        public string Time { get { return _datetime; } }                            // свойство для получения предыдущего поля
+        public string Latitude { get; set; }                                        // широта
+        public string Longitude { get; set; }                                       // долгота
+        public string Speed { get; set; }                                           // скорость
 
         public Coordinates() { }
         public Coordinates(string str) { GetCoords(str); }
 
+        // парсит координаты из строки
         public void GetCoords(string _str)
         {
             try
@@ -35,17 +39,21 @@ namespace GPSTrackerServer
         }
     }
 
+    /// <summary>
+    /// клиентское подключение
+    /// по сути содержит все данные о клиенте, которые надо знать серверу
+    /// </summary>
     class ClientConnection
     {
-        public string ClientName { private set; get; }      // Имя клиента (устанавливается при успешной авторизации)
-        private Socket Sock;                                // Сокет клиента
-        private SocketAsyncEventArgs SockAsyncEventArgs;    // объект необходимый для передачи сообщений 
+        public string ClientName { private set; get; }          // Имя клиента (устанавливается при успешной авторизации)
+        private Socket Sock;                                    // Сокет клиента
+        private SocketAsyncEventArgs SockAsyncEventArgs;        // объект необходимый для передачи сообщений 
         private byte[] buff;
-        private DBConnection db = new DBConnection(Server.cfg);       // подключение к базе данных
+        private DBConnection db = new DBConnection(Server.cfg); // подключение к базе данных
 
-        public event ConnectionEvent AuthorizationFaild;    // Событие успешной авторизации
-        public event ConnectionEvent AuthorizationSuccess;  // Событие не совсем успешной авторизации
-        public event ConnectionEvent Disconnected;           // Событие не совсем успешной авторизации
+        public event ConnectionEvent AuthorizationFaild;        // Событие успешной авторизации
+        public event ConnectionEvent AuthorizationSuccess;      // Событие не совсем успешной авторизации
+        public event ConnectionEvent Disconnected;              // Событие не совсем успешной авторизации
         public delegate void ConnectionEvent(ClientConnection sender, string message);   
 
         System.Timers.Timer AuthTime = new System.Timers.Timer(Server.cfg.AuthTime*100); // время на авторизацию
@@ -123,7 +131,7 @@ namespace GPSTrackerServer
             if (string.IsNullOrEmpty(str)) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string is empty");
             string[] SplitedString = str.Replace("!", "").Split('@');
             if (SplitedString.Count() != 2) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string haz wrong format");
-            string result = db.GetUser("select Password from Users where UserName='" + SplitedString[0] + "'");
+            string result = db.GetUser(SplitedString[0]);
             if (result == "User not found") AuthorizationFaild(this, string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0]));
             if (result != SplitedString[1]) AuthorizationFaild(this, string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0]));
             ClientName = SplitedString[0];

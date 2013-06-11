@@ -54,7 +54,7 @@
             this.tbSecret.Name = "tbSecret";
             this.tbSecret.ReadOnly = true;
             this.tbSecret.Size = new System.Drawing.Size(269, 20);
-            this.tbSecret.TabIndex = 1;
+            this.tbSecret.TabIndex = 0;
             // 
             // label1
             // 
@@ -70,7 +70,7 @@
             this.bDelete.Location = new System.Drawing.Point(12, 428);
             this.bDelete.Name = "bDelete";
             this.bDelete.Size = new System.Drawing.Size(87, 21);
-            this.bDelete.TabIndex = 3;
+            this.bDelete.TabIndex = 5;
             this.bDelete.Text = "Удалить";
             this.bDelete.UseVisualStyleBackColor = true;
             this.bDelete.Click += new System.EventHandler(this.bDelete_Click);
@@ -80,7 +80,7 @@
             this.bGenerate.Location = new System.Drawing.Point(194, 9);
             this.bGenerate.Name = "bGenerate";
             this.bGenerate.Size = new System.Drawing.Size(87, 21);
-            this.bGenerate.TabIndex = 3;
+            this.bGenerate.TabIndex = 1;
             this.bGenerate.Text = "Генерировать";
             this.bGenerate.UseVisualStyleBackColor = true;
             this.bGenerate.Click += new System.EventHandler(this.bGenerate_Click);
@@ -88,9 +88,10 @@
             // tbAddFriend
             // 
             this.tbAddFriend.Location = new System.Drawing.Point(12, 70);
+            this.tbAddFriend.MaxLength = 32;
             this.tbAddFriend.Name = "tbAddFriend";
             this.tbAddFriend.Size = new System.Drawing.Size(269, 20);
-            this.tbAddFriend.TabIndex = 1;
+            this.tbAddFriend.TabIndex = 2;
             // 
             // bAdd
             // 
@@ -116,7 +117,7 @@
             this.bSave.Location = new System.Drawing.Point(194, 428);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(87, 21);
-            this.bSave.TabIndex = 3;
+            this.bSave.TabIndex = 6;
             this.bSave.Text = "Сохранить";
             this.bSave.UseVisualStyleBackColor = true;
             this.bSave.Click += new System.EventHandler(this.bSave_Click);
@@ -130,7 +131,7 @@
             this.cbSelectAll.TabIndex = 4;
             this.cbSelectAll.Text = "Выбрать всех";
             this.cbSelectAll.UseVisualStyleBackColor = true;
-            this.cbSelectAll.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.cbSelectAll.CheckedChanged += new System.EventHandler(this.cbSelectAll_CheckedChange);
             // 
             // AddFriends
             // 
@@ -147,8 +148,9 @@
             this.Controls.Add(this.tbAddFriend);
             this.Controls.Add(this.tbSecret);
             this.Controls.Add(this.clbFriends);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AddFriends";
-            this.Text = "AddFriends";
+            this.Text = "Управление доступом";
             this.ResumeLayout(false);
             this.PerformLayout();
 

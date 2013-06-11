@@ -21,6 +21,7 @@ namespace ServerConfigurator
             this.Fill();
         }
 
+        // заполняет поля формы при редактировании
         void Fill() 
         {
             //server
@@ -48,13 +49,14 @@ namespace ServerConfigurator
             tbDBname.Text = Program.cfg.DB;
         }
 
-        void WriteConfig()
+        // записывает настройки в конфиг
+        string WriteConfig()
         {
             //server
-            Program.cfg.AuthTime = Convert.ToInt16(tbAuthTime.Text);
-            Program.cfg.KeepAliveTime = Convert.ToInt16(tbKeepAliveTime.Text);
-            Program.cfg.MaxClients = Convert.ToInt16(tbMaxConnections.Text);
-            Program.cfg.Port = Convert.ToInt16(tbPort.Text);
+            Program.cfg.AuthTime = Convert.ToInt32(tbAuthTime.Text);
+            Program.cfg.KeepAliveTime = Convert.ToInt32(tbKeepAliveTime.Text);
+            Program.cfg.MaxClients = Convert.ToInt32(tbMaxConnections.Text);
+            Program.cfg.Port = Convert.ToInt32(tbPort.Text);
 
             //Console
             Program.cfg.Console = cbConsole.Checked;
@@ -74,12 +76,12 @@ namespace ServerConfigurator
             Program.cfg.DBpassword = tbDBpassword.Text;
             Program.cfg.DB = tbDBname.Text;
 
-            _fcfg.WriteConfigFile(Program.cfg);
+            return _fcfg.WriteConfigFile(Program.cfg);
         }
 
         private void bSave_Click(object sender, EventArgs e)
         {
-            WriteConfig();
+            lStatus.Text = WriteConfig();
         }
 
         private void bCancel_Click(object sender, EventArgs e)

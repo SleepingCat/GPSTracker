@@ -47,14 +47,18 @@ namespace GPSTrackerServer
             catch (Exception ex) { Output.Write(ex.Message, 1); }
         }
 
-        public string GetUser(string Query)
+        /// <summary>
+        /// получает хэш паролья пользователя
+        /// </summary>
+        /// <param name="UserName">Имя пользователя</param>
+        /// <returns>хэш пароля</returns>
+        public string GetUser(string UserName)
         {
             try
             {
-                //Connection.Open();
-                myCommand = new MySqlCommand(Query, Connection);
+                string query = "select Password from Users where UserName='" + UserName + "'";
+                myCommand = new MySqlCommand(query, Connection);
                 string result = myCommand.ExecuteScalar().ToString();
-                //Connection.Close();
                 return result;
             }
             catch (NullReferenceException)
@@ -64,7 +68,6 @@ namespace GPSTrackerServer
             catch (Exception ex)
             {
                 Output.Write(ex.Message, 1);
-                //Console.WriteLine(ex.Message);
                 return ex.Message;
             }
         }
@@ -75,52 +78,18 @@ namespace GPSTrackerServer
         /// <param name="query">Insert-запрос</param>
         public void InsertQuery(string query)
         {
-            //string InsertQuery = "INSERT INTO Orders (id, customerId, amount) Values(1001, 23, 30.66)";
             MySqlCommand Command = new MySqlCommand(query,Connection);
             try
             {
-                //Connection.Open(); //Устанавливаем соединение с базой данных.
                 Command.ExecuteNonQuery();
-                //Connection.Close(); //Обязательно закрываем соединение!
             }
             catch (Exception ex)
             {
                 Output.Write(ex.Message, 1);
-                //Console.WriteLine(ex.Message);
             }
         }
 
         public void Open() { Connection.Open(); }
         public void Close() { Connection.Close(); }
-
-        /// <summary>
-        /// Запрашивает данные из таблицы (зачем? - х.з., чтобы было)
-        /// </summary>
-        /// <param name="query">Select-запрос</param>
-        private void GetUserList(string query)
-        {
-
-            MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            MySqlCommand cmd = new MySqlCommand(query, Connection);
-            MySqlDataReader reader = null;
-
-            try
-            {
-                reader = cmd.ExecuteReader();
-                while (reader.Read()) // перебираем полученные данные
-                {
-                    // тут мы их куда-то запихиваем
-                }
-            }
-            catch (MySqlException ex)
-            {
-                Output.Write(ex.Message, 1);
-                //Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                if (reader != null) reader.Close();
-            }
-        }
     }
 }

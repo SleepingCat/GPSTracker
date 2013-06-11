@@ -62,8 +62,8 @@ namespace ConfigurationLibrary
             Configuration tmp = new Configuration();
             tmp.Port = 4505;
             tmp.MaxClients = 10;
-            tmp.AuthTime = 1000 * 60 * 5;
-            tmp.KeepAliveTime = 1000 * 60 * 5;
+            tmp.AuthTime = 60 * 5;
+            tmp.KeepAliveTime = 60 * 5;
             tmp.Log = true;
             tmp.Console = true;
             tmp.ShowError = true;
@@ -76,17 +76,22 @@ namespace ConfigurationLibrary
             tmp.DBhost = "localhost";
             tmp.DB = "GPSTracker";
             tmp.DBuser = "GPSTracker";
-            tmp.DBpassword = "nanodesu";
+            tmp.DBpassword = "root";
             return tmp;
         }
 
-        public void WriteConfigFile(Configuration cfg)
+        public string WriteConfigFile(Configuration cfg)
         {
-            XmlSerializer xmlserialazer = new XmlSerializer(typeof(Configuration));
-            using (TextWriter myStreamWriter = new StreamWriter(ConfigFilePath))
+            try
             {
-                xmlserialazer.Serialize(myStreamWriter, cfg);
+                XmlSerializer xmlserialazer = new XmlSerializer(typeof(Configuration));
+                using (TextWriter myStreamWriter = new StreamWriter(ConfigFilePath))
+                {
+                    xmlserialazer.Serialize(myStreamWriter, cfg);
+                }
             }
+            catch (Exception ex) { return ex.Message; }
+            return "Writing was successful";
         }
     }
 }

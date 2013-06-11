@@ -1,4 +1,7 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// форма редактирования доступа к просмотру маршрута других пользователей
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,6 +23,7 @@ namespace ServerConfigurator
             FillData();
         }
 
+        // заполняет форму данными
         void FillData()
         {
             User u = Program._dbConnection.GetUser(name);
@@ -35,12 +39,14 @@ namespace ServerConfigurator
             }
         }
 
+        // генерирует секретный код для клиента
         private void bGenerate_Click(object sender, EventArgs e)
         {
             this.tbSecret.Text = Program._dbConnection.CreateInvite(name);
             Program._dbConnection.ExecuteQuery("Update Users set Invite='" + this.tbSecret.Text + "' where UserName='" + name + "'");
         }
 
+        // добавляет возможность просмотра маршрута, чей секретный код был введен
         private void bAdd_Click(object sender, EventArgs e)
         {
             string FriendID = Program._dbConnection.GetUserIDbySecret(tbAddFriend.Text);
@@ -58,7 +64,7 @@ namespace ServerConfigurator
         }
 
         bool AllChecked = false;
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void cbSelectAll_CheckedChange(object sender, EventArgs e)
         {
             for (int i = 0; i < this.clbFriends.Items.Count; i++)
             {

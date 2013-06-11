@@ -1,0 +1,149 @@
+body
+{
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	Font-size:10pt;
+}
+.top 
+{
+	height: 40px;
+	background: #ccc; /* Для старых браузров */
+	background: -moz-linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17)); /* Firefox 3.6+ */
+	/* Chrome 1-9, Safari 4-5 */
+	background: -webkit-gradient(linear, left top, left bottom, 
+				color-stop(0%,#fff), color-stop(100%,#aaa));
+	/* Chrome 10+, Safari 5.1+ */
+	background: -webkit-linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17));
+	background: -o-linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17)); /* Opera 11.10+ */
+	background: -ms-linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17)); /* IE10 */
+	background: linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17)); /* CSS3 */ 
+	border-bottom: 1px solid #333;
+	Font-size:14px;
+}
+.top a
+{
+	float:left;
+	display:block;
+	
+}
+#MyLogo a
+{
+	font-weight: 200;
+	font-size: 20pt;
+	text-decoration:none;
+	display:block;
+	Color:rgb(153, 153, 153);
+	padding:5px;15px;
+}
+.column
+{
+	position:absolute;
+	bottom:41px;
+	top:41px;
+}
+.map 
+{
+	min-width:600px;
+	left:0;
+	right:380px;
+}
+.navbar 
+{
+	width:380px;
+	min-width:380px;
+	right:0;
+}
+.foot 
+{
+	position:absolute;
+	height: 40px;
+	bottom:0;
+	width:100%;
+	background:#eee;
+	border-top:1px solid #333;
+}
+.MyCopyright
+{	
+	margin:12px auto auto 30px;
+	Color:rgb(153, 153, 153);
+}
+.navbar-container
+{
+	margin:10px;
+	padding:5px;
+	border:1px solid #ddd;
+	border-radius:5px;
+	background: #eee;
+}
+#map-canvas
+{
+	min-width:300px;
+	min-height:300px;
+	width:100%;
+	height:100%;
+	border-right:1px solid #333;
+}
+#MyMarker
+{
+	position:relative;
+	Color:#333;
+	padding:5px 10px;
+	height:auto;
+	width:300px;
+}
+#MyMarker span
+{
+	Color:#bbb;
+	Text-decoration:underline;
+	position:relative;
+	top: 7px;
+	right:4px;
+}
+#MyMarker a
+{
+	margin:0;
+	position:relative;
+	padding:7px 15px;
+	background: #fff; /* Для старых браузров */
+	background: -moz-linear-gradient(top, #fff, #ccc); /* Firefox 3.6+ */
+	/* Chrome 1-9, Safari 4-5 */
+	background: -webkit-gradient(linear, left top, left bottom, 
+				color-stop(0%,#fff), color-stop(100%,#ccc));
+	/* Chrome 10+, Safari 5.1+ */
+	background: -webkit-linear-gradient(top, #fff, #ccc);
+	background: -o-linear-gradient(top, #fff, #ccc); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #fff, #ccc); /* IE10 */
+	background: linear-gradient(top, #fff, #ccc); /* CSS3 */ 
+
+	border-radius:5px;
+	display:block;
+	float:right;
+	box-shadow: 2px 3px 0px rgba(0,0,0,0.5); /* Параметры тени */
+}
+#MyMarker a:hover
+{
+	left:1px;
+	top:1px;
+	box-shadow: 1px 2px 0px rgba(0,0,0,0.5); /* Параметры тени */
+	cursor:pointer;
+}
+.navbar-container table
+{
+	width:100%;
+	border-collapse: separate;
+	border-spacing:2px 2px;
+	border:1px solid #ddd;
+}
+.white-background
+{
+	background:#FFF;
+}
+.users tr
+{
+	border:1px solid white;
+}
+.users td,.users th
+{
+	border:1px solid #ddd;
+	background:#eee;
+	text-align:center;
+}

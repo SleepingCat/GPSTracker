@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.bSaveAndStart = new System.Windows.Forms.Button();
             this.bDefault = new System.Windows.Forms.Button();
             this.bSave = new System.Windows.Forms.Button();
             this.bCancel = new System.Windows.Forms.Button();
@@ -66,12 +67,13 @@
             this.базаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьПустуюБазуДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.добавитьПользователяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bSaveAndStart = new System.Windows.Forms.Button();
+            this.lStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -92,12 +94,22 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настройки";
             // 
+            // bSaveAndStart
+            // 
+            this.bSaveAndStart.Location = new System.Drawing.Point(345, 249);
+            this.bSaveAndStart.Name = "bSaveAndStart";
+            this.bSaveAndStart.Size = new System.Drawing.Size(135, 23);
+            this.bSaveAndStart.TabIndex = 5;
+            this.bSaveAndStart.Text = "Сохранить и запустить";
+            this.bSaveAndStart.UseVisualStyleBackColor = true;
+            this.bSaveAndStart.Click += new System.EventHandler(this.bSaveAndStart_Click);
+            // 
             // bDefault
             // 
             this.bDefault.Location = new System.Drawing.Point(12, 249);
             this.bDefault.Name = "bDefault";
             this.bDefault.Size = new System.Drawing.Size(208, 23);
-            this.bDefault.TabIndex = 3;
+            this.bDefault.TabIndex = 4;
             this.bDefault.Text = "Загрузить стандартные настройки";
             this.bDefault.UseVisualStyleBackColor = true;
             this.bDefault.Click += new System.EventHandler(this.bDefault_Click);
@@ -107,7 +119,7 @@
             this.bSave.Location = new System.Drawing.Point(486, 249);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(75, 23);
-            this.bSave.TabIndex = 3;
+            this.bSave.TabIndex = 6;
             this.bSave.Text = "Сохранить";
             this.bSave.UseVisualStyleBackColor = true;
             this.bSave.Click += new System.EventHandler(this.bSave_Click);
@@ -117,7 +129,7 @@
             this.bCancel.Location = new System.Drawing.Point(567, 249);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
-            this.bCancel.TabIndex = 3;
+            this.bCancel.TabIndex = 7;
             this.bCancel.Text = "Отмена";
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
@@ -135,7 +147,7 @@
             this.groupBox5.Location = new System.Drawing.Point(12, 19);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(312, 127);
-            this.groupBox5.TabIndex = 2;
+            this.groupBox5.TabIndex = 0;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Настройки сервера";
             // 
@@ -151,6 +163,7 @@
             // tbPort
             // 
             this.tbPort.Location = new System.Drawing.Point(218, 18);
+            this.tbPort.MaxLength = 5;
             this.tbPort.Name = "tbPort";
             this.tbPort.Size = new System.Drawing.Size(85, 20);
             this.tbPort.TabIndex = 0;
@@ -158,16 +171,18 @@
             // tbMaxConnections
             // 
             this.tbMaxConnections.Location = new System.Drawing.Point(218, 44);
+            this.tbMaxConnections.MaxLength = 32;
             this.tbMaxConnections.Name = "tbMaxConnections";
             this.tbMaxConnections.Size = new System.Drawing.Size(85, 20);
-            this.tbMaxConnections.TabIndex = 0;
+            this.tbMaxConnections.TabIndex = 1;
             // 
             // tbKeepAliveTime
             // 
             this.tbKeepAliveTime.Location = new System.Drawing.Point(218, 70);
+            this.tbKeepAliveTime.MaxLength = 32;
             this.tbKeepAliveTime.Name = "tbKeepAliveTime";
             this.tbKeepAliveTime.Size = new System.Drawing.Size(85, 20);
-            this.tbKeepAliveTime.TabIndex = 0;
+            this.tbKeepAliveTime.TabIndex = 2;
             // 
             // label8
             // 
@@ -181,9 +196,10 @@
             // tbAuthTime
             // 
             this.tbAuthTime.Location = new System.Drawing.Point(218, 96);
+            this.tbAuthTime.MaxLength = 32;
             this.tbAuthTime.Name = "tbAuthTime";
             this.tbAuthTime.Size = new System.Drawing.Size(85, 20);
-            this.tbAuthTime.TabIndex = 0;
+            this.tbAuthTime.TabIndex = 3;
             // 
             // label7
             // 
@@ -259,24 +275,27 @@
             // tbDBpassword
             // 
             this.tbDBpassword.Location = new System.Drawing.Point(104, 99);
+            this.tbDBpassword.MaxLength = 64;
             this.tbDBpassword.Name = "tbDBpassword";
             this.tbDBpassword.PasswordChar = '*';
             this.tbDBpassword.Size = new System.Drawing.Size(202, 20);
-            this.tbDBpassword.TabIndex = 0;
+            this.tbDBpassword.TabIndex = 3;
             // 
             // tbDBuser
             // 
             this.tbDBuser.Location = new System.Drawing.Point(104, 73);
+            this.tbDBuser.MaxLength = 64;
             this.tbDBuser.Name = "tbDBuser";
             this.tbDBuser.Size = new System.Drawing.Size(202, 20);
-            this.tbDBuser.TabIndex = 0;
+            this.tbDBuser.TabIndex = 2;
             // 
             // tbDBname
             // 
             this.tbDBname.Location = new System.Drawing.Point(104, 47);
+            this.tbDBname.MaxLength = 64;
             this.tbDBname.Name = "tbDBname";
             this.tbDBname.Size = new System.Drawing.Size(202, 20);
-            this.tbDBname.TabIndex = 0;
+            this.tbDBname.TabIndex = 1;
             // 
             // tbDBhost
             // 
@@ -295,7 +314,7 @@
             this.groupBox3.Location = new System.Drawing.Point(330, 152);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(312, 95);
-            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             // 
             // bPath
@@ -330,7 +349,7 @@
             this.cbLogConnectMessages.Location = new System.Drawing.Point(15, 72);
             this.cbLogConnectMessages.Name = "cbLogConnectMessages";
             this.cbLogConnectMessages.Size = new System.Drawing.Size(273, 17);
-            this.cbLogConnectMessages.TabIndex = 0;
+            this.cbLogConnectMessages.TabIndex = 4;
             this.cbLogConnectMessages.Text = "Сообщения Подключения/Отключения клиентов";
             this.cbLogConnectMessages.UseVisualStyleBackColor = true;
             // 
@@ -340,7 +359,7 @@
             this.cbLogErrors.Location = new System.Drawing.Point(15, 49);
             this.cbLogErrors.Name = "cbLogErrors";
             this.cbLogErrors.Size = new System.Drawing.Size(66, 17);
-            this.cbLogErrors.TabIndex = 0;
+            this.cbLogErrors.TabIndex = 3;
             this.cbLogErrors.Text = "Ошибки";
             this.cbLogErrors.UseVisualStyleBackColor = true;
             // 
@@ -353,7 +372,7 @@
             this.groupBox2.Location = new System.Drawing.Point(12, 152);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(312, 95);
-            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             // 
             // cbConsole
@@ -372,7 +391,7 @@
             this.cbConClientGPSData.Location = new System.Drawing.Point(15, 69);
             this.cbConClientGPSData.Name = "cbConClientGPSData";
             this.cbConClientGPSData.Size = new System.Drawing.Size(237, 17);
-            this.cbConClientGPSData.TabIndex = 0;
+            this.cbConClientGPSData.TabIndex = 3;
             this.cbConClientGPSData.Text = "Сообщения и координаты пользователей";
             this.cbConClientGPSData.UseVisualStyleBackColor = true;
             // 
@@ -382,7 +401,7 @@
             this.cbConErrors.Location = new System.Drawing.Point(15, 23);
             this.cbConErrors.Name = "cbConErrors";
             this.cbConErrors.Size = new System.Drawing.Size(66, 17);
-            this.cbConErrors.TabIndex = 0;
+            this.cbConErrors.TabIndex = 1;
             this.cbConErrors.Text = "Ошибки";
             this.cbConErrors.UseVisualStyleBackColor = true;
             // 
@@ -392,16 +411,18 @@
             this.cbConConnectMessages.Location = new System.Drawing.Point(15, 46);
             this.cbConConnectMessages.Name = "cbConConnectMessages";
             this.cbConConnectMessages.Size = new System.Drawing.Size(273, 17);
-            this.cbConConnectMessages.TabIndex = 0;
+            this.cbConConnectMessages.TabIndex = 2;
             this.cbConConnectMessages.Text = "Сообщения Подключения/Отключения клиентов";
             this.cbConConnectMessages.UseVisualStyleBackColor = true;
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 312);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(671, 22);
-            this.statusStrip1.TabIndex = 1;
+            this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // menuStrip1
@@ -411,7 +432,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(671, 24);
-            this.menuStrip1.TabIndex = 2;
+            this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // базаДанныхToolStripMenuItem
@@ -437,15 +458,11 @@
             this.добавитьПользователяToolStripMenuItem.Text = "Управление пользователями";
             this.добавитьПользователяToolStripMenuItem.Click += new System.EventHandler(this.добавитьПользователяToolStripMenuItem_Click);
             // 
-            // bSaveAndStart
+            // lStatus
             // 
-            this.bSaveAndStart.Location = new System.Drawing.Point(345, 249);
-            this.bSaveAndStart.Name = "bSaveAndStart";
-            this.bSaveAndStart.Size = new System.Drawing.Size(135, 23);
-            this.bSaveAndStart.TabIndex = 3;
-            this.bSaveAndStart.Text = "Сохранить и запустить";
-            this.bSaveAndStart.UseVisualStyleBackColor = true;
-            this.bSaveAndStart.Click += new System.EventHandler(this.bSaveAndStart_Click);
+            this.lStatus.Name = "lStatus";
+            this.lStatus.Size = new System.Drawing.Size(25, 17);
+            this.lStatus.Text = "      ";
             // 
             // Settings
             // 
@@ -467,6 +484,8 @@
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -515,6 +534,7 @@
         private System.Windows.Forms.Button bCancel;
         private System.Windows.Forms.Button bDefault;
         private System.Windows.Forms.Button bSaveAndStart;
+        private System.Windows.Forms.ToolStripStatusLabel lStatus;
 
     }
 }

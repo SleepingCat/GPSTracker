@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbSecret = new System.Windows.Forms.TextBox();
+            this.bGenerateSecret = new System.Windows.Forms.Button();
             this.bSave = new System.Windows.Forms.Button();
             this.bCancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -36,8 +38,6 @@
             this.tbName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.tbSecret = new System.Windows.Forms.TextBox();
-            this.bGenerateSecret = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -55,6 +55,24 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Добавить пользователя";
+            // 
+            // tbSecret
+            // 
+            this.tbSecret.Location = new System.Drawing.Point(6, 126);
+            this.tbSecret.Name = "tbSecret";
+            this.tbSecret.ReadOnly = true;
+            this.tbSecret.Size = new System.Drawing.Size(230, 20);
+            this.tbSecret.TabIndex = 0;
+            // 
+            // bGenerateSecret
+            // 
+            this.bGenerateSecret.Location = new System.Drawing.Point(6, 98);
+            this.bGenerateSecret.Name = "bGenerateSecret";
+            this.bGenerateSecret.Size = new System.Drawing.Size(230, 22);
+            this.bGenerateSecret.TabIndex = 7;
+            this.bGenerateSecret.Text = "Сгенерировать секретный код";
+            this.bGenerateSecret.UseVisualStyleBackColor = true;
+            this.bGenerateSecret.Click += new System.EventHandler(this.bGenerateSecret_Click);
             // 
             // bSave
             // 
@@ -120,32 +138,15 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Пароль";
             // 
-            // tbSecret
-            // 
-            this.tbSecret.Location = new System.Drawing.Point(6, 126);
-            this.tbSecret.Name = "tbSecret";
-            this.tbSecret.ReadOnly = true;
-            this.tbSecret.Size = new System.Drawing.Size(230, 20);
-            this.tbSecret.TabIndex = 0;
-            // 
-            // bGenerateSecret
-            // 
-            this.bGenerateSecret.Location = new System.Drawing.Point(6, 98);
-            this.bGenerateSecret.Name = "bGenerateSecret";
-            this.bGenerateSecret.Size = new System.Drawing.Size(230, 22);
-            this.bGenerateSecret.TabIndex = 7;
-            this.bGenerateSecret.Text = "Сгенерировать секретный код";
-            this.bGenerateSecret.UseVisualStyleBackColor = true;
-            this.bGenerateSecret.Click += new System.EventHandler(this.bGenerateSecret_Click);
-            // 
             // AddUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(263, 209);
             this.Controls.Add(this.groupBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AddUser";
-            this.Text = "AddUser";
+            this.Text = "Добавить пользователя";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

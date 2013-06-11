@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 
 namespace ServerConfigurator
 {
+    //целый класс для получения мд5 хэша
     static class MD5HashGenerate
     {
         public static string GetMD5(string input)
@@ -33,7 +34,10 @@ namespace ServerConfigurator
         }
     }
 
-    class User:Object
+    /// <summary>
+    ///  класс контейнер данных о пользователе
+    /// </summary>
+    class User
     {
         public string id;
         public string Name;
@@ -45,6 +49,9 @@ namespace ServerConfigurator
         }
     }
 
+    /// <summary>
+    /// класс для работы с базой данных
+    /// </summary>
     class DBConnect
     {
         MySqlConnection Connection;
@@ -52,6 +59,10 @@ namespace ServerConfigurator
         MySqlCommandBuilder _cb;
         DataSet _ds;
 
+        /// <summary>
+        /// выполняет Insert/Update запрос
+        /// </summary>
+        /// <param name="query">запрос</param>
         public void ExecuteQuery(string query)
         {
             Connection = new MySqlConnection("Database=" + Program.cfg.DB + ";Data Source=" + Program.cfg.DBhost + ";User Id=" + Program.cfg.DBuser + ";Password=" + Program.cfg.DBpassword + ";");
@@ -70,6 +81,10 @@ namespace ServerConfigurator
             }
         }
 
+        /// <summary>
+        /// получает таблицу пользователей
+        /// </summary>
+        /// <returns></returns>
         public DataTable LoadUsersTable()
         {
             Connection = new MySqlConnection("Database=" + Program.cfg.DB + ";Data Source=" + Program.cfg.DBhost + ";User Id=" + Program.cfg.DBuser + ";Password=" + Program.cfg.DBpassword + ";");
@@ -92,49 +107,20 @@ namespace ServerConfigurator
             return null;
         }
 
-        public void UpdateUser()
-        {
-            
-        }
-/*
-        public string AddUser(string Username, string password, string secret)
-        {
-            try
-            {   
-                string query = "Insert into Users (UserName, Password, Invite) values('" + Username + "','" + password + "','" + secret + "')";
-                MySqlCommand Command = new MySqlCommand(query, Connection);
-                Connection.Open(); //Устанавливаем соединение с базой данных.
-                Command.ExecuteNonQuery();
-
-                query = "CREATE TABLE `" + Username + @"` (
-                `Latitude`  double(10,0) NULL DEFAULT NULL ,
-                `Longitude`  double(10,0) NULL DEFAULT NULL ,
-                `Speed`  double(10,0) NULL DEFAULT NULL ,
-                `Time`  datetime NULL DEFAULT NULL 
-                )
-                ENGINE=MyISAM
-                DEFAULT CHARACTER SET=utf8 COLLATE=utf8_bin
-                CHECKSUM=0
-                ROW_FORMAT=FIXED
-                DELAY_KEY_WRITE=0
-                ;go;
-                ";
-                Command = new MySqlCommand(query, Connection);
-                Command.ExecuteNonQuery();
-                Connection.Close(); //Обязательно закрываем соединение!
-            }
-            catch (Exception ex) {return ex.Message;}
-            return "Пользователь создан";
-        }
-*/
-
+        /// <summary>
+        /// добавляет пользователя в систему
+        /// </summary>
+        /// <param name="Username">Имя пользователя</param>
+        /// <param name="password">пароль</param>
+        /// <param name="secret">секретный код</param>
+        /// <returns>результат операции</returns>
         public string AddUser(string Username, string password, string secret)
         {
             try
             {
                 string query = "Insert into Users (UserName, Password, Invite) values('" + Username + "','" + password + "','" + secret + "')";
                 MySqlCommand Command = new MySqlCommand(query, Connection);
-                Connection.Open(); //Устанавливаем соединение с базой данных.
+                Connection.Open(); 
                 Command.ExecuteNonQuery();
 
                 query = "CREATE TABLE `" + Username + @"` (
@@ -150,12 +136,17 @@ namespace ServerConfigurator
 
                 Command = new MySqlCommand(query, Connection);
                 Command.ExecuteNonQuery();
-                Connection.Close(); //Обязательно закрываем соединение!
+                Connection.Close(); 
             }
             catch (Exception ex) { return ex.Message; }
             return "Пользователь создан";
         }
 
+        /// <summary>
+        /// изменяет пароль пользователя
+        /// </summary>
+        /// <param name="UserID">идентификатор пользователя</param>
+        /// <param name="password">новый пароль</param>
         public void ChangePassword(string UserID, string password)
         {
             string query = "update Users set Password='" + password + "' where UserID = '" + UserID + "'";
@@ -172,14 +163,12 @@ namespace ServerConfigurator
             while (this.GetUserIDbySecret(invite) != null);
             return invite;
         }
-        /*
-        public string CreateInvite(string UserID, string invite)
-        {
-            string query = "update Users set Invite='" + invite + "' where UserID = '" + UserID + "'";
-            this.ExecuteQuery(query);
-            return invite;
-        }
-        */
+
+        /// <summary>
+        /// предоставляет пользователю возможность просматривать маршруты других пользователей
+        /// </summary>
+        /// <param name="uname">пользователь, которому предоставляется доступ</param>
+        /// <param name="friendsList">пользователи к которым предоставляется доступ</param>
         public void AddFriends(string uname, CheckedListBox friendsList)
         {
             string friends = "";
@@ -191,6 +180,11 @@ namespace ServerConfigurator
             this.ExecuteQuery(query);
         }
 
+        /// <summary>
+        /// получает данные пользователя из бд
+        /// </summary>
+        /// <param name="name">имя пользователя</param>
+        /// <returns>данные о пользователе</returns>
         public User GetUser(string name)
         {
             if (string.IsNullOrEmpty(name)) { return null; }
@@ -216,33 +210,12 @@ namespace ServerConfigurator
             finally { Connection.Close(); }
             return null;
         }
-        /*
-        public User GetUser(string id)
-        {
-            if (string.IsNullOrEmpty(id)) { return null; }
-            User u = new User();
-            try
-            {
-                string query = "select UserId, UserName, Invite, Friends from Users where UserID='"+id+"'";
-                Connection = new MySqlConnection("Database=" + Program.cfg.DB + ";Data Source=" + Program.cfg.DBhost + ";User Id=" + Program.cfg.DBuser + ";Password=" + Program.cfg.DBpassword + ";");
-                Connection.Open();
-                MySqlCommand Command = new MySqlCommand(query, Connection);
-                MySqlDataReader rd = Command.ExecuteReader();
-                rd.Read();
-                u.id = rd.GetString(0);
-                u.Name = rd.GetString(1);
-                u.Invite = rd.GetValue(2).ToString();
-                u.Friends = rd.GetValue(3).ToString();
-                return u;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally { Connection.Close();}
-            return null;
-        }
-        */
+
+        /// <summary>
+        /// возвращает имя пользователя по секретному коду
+        /// </summary>
+        /// <param name="secret">секретный код</param>
+        /// <returns>имя пользователя</returns>
         public string GetUserIDbySecret(string secret)
         {
             try
@@ -263,6 +236,9 @@ namespace ServerConfigurator
             return null;
         }
 
+        /// <summary>
+        /// применяет изменения
+        /// </summary>
         public void Apply()
         {
             this._da.Update(this._ds);
