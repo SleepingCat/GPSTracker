@@ -14,7 +14,7 @@ namespace GPSTrackerServer
     class Coordinates
     {
         public bool IsGood { get; private set; }                                    // если истинно, то полученное от клиента сообщение в правильном формате и содержит координаты 
-        private string _datetime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");    // получает значение даты и времени сервера (именно они записываются в БД, а не полученные от пользователя)
+        private string _datetime = DateTime.Now.ToString("yyyy-MM-dd H:mm:ss");    // получает значение даты и времени сервера (именно они записываются в БД, а не полученные от пользователя)
         public string Time { get { return _datetime; } }                            // свойство для получения предыдущего поля
         public string Latitude { get; set; }                                        // широта
         public string Longitude { get; set; }                                       // долгота
@@ -128,12 +128,12 @@ namespace GPSTrackerServer
         /// <param name="str">Строка авторизации</param>
         private void Authorization(string str)
         {
-            if (string.IsNullOrEmpty(str)) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string is empty");
+            if (string.IsNullOrEmpty(str)) { AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string is empty"); return; }
             string[] SplitedString = str.Replace("!", "").Split('@');
-            if (SplitedString.Count() != 2) AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string haz wrong format");
+            if (SplitedString.Count() != 2) { AuthorizationFaild(this, Sock.RemoteEndPoint + ": Auth string haz wrong format"); return; }
             string result = db.GetUser(SplitedString[0]);
-            if (result == "User not found") AuthorizationFaild(this, string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0]));
-            if (result != SplitedString[1]) AuthorizationFaild(this, string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0]));
+            if (result == "User not found") { AuthorizationFaild(this, string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0])); return; }
+            if (result != SplitedString[1]) { AuthorizationFaild(this, string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0])); return; }
             ClientName = SplitedString[0];
             AuthorizationSuccess(this, string.Format("{0}: {1} Auth Success", Sock.RemoteEndPoint, ClientName));
         }

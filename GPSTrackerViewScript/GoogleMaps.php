@@ -21,8 +21,8 @@ $friends = ArrayTrim(explode(";",$friendsStr[0]));
 array_unshift($friends, $username);
 for($i=0;$i<count($friends);$i++)
 {
-	if (isset($_COOKIE[$friends[$i]+'_limit'])) {$limit = $_COOKIE[$friends[$i]+'_limit'];} else {$limit=10;}
-	$query = @mysql_query("SELECT Latitude, Longitude FROM `$friends[$i]` ORDER BY `Time` desc LIMIT $limit") or die (mysql_error());
+	if (isset($_COOKIE[$friends[$i].'_limit'])) {$limit = $_COOKIE[$friends[$i].'_limit'];} else {$limit=10;}
+	$query = @mysql_query("SELECT Latitude, Longitude, Time FROM `$friends[$i]` ORDER BY `Time` asc LIMIT $limit") or die (mysql_error());
 
 	while($result = @mysql_fetch_array($query))
 	{ 				
@@ -30,8 +30,8 @@ for($i=0;$i<count($friends);$i++)
 		$coords[$friends[$i]][] = $result;
 	}
 }
-?>
 
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -57,7 +57,7 @@ for($i=0;$i<count($friends);$i++)
                                    <link rel="shortcut icon" href="./files/img/iconmonstr-map-6-icon.png">
     <script>
       var map;
-	  var color = '#FFFF00';
+	  //var color = '#FFFF00';
       function initialize() {
 		<?php
 		// генерируем карту и линию по координатам
@@ -71,40 +71,88 @@ for($i=0;$i<count($friends);$i++)
 		\n";
 		foreach($coords as $key => $val)
 		{
-		echo "var ".$key."flightPlanCoordinates = [\n";
-		$ArraySize = sizeof($val)-1;
-		for($i=0; $i<$ArraySize; $i++)
-		{
-			echo "\t\tnew google.maps.LatLng(".$val[$i]['Latitude'].",".$val[$i]['Longitude']."),\n";
+			echo "var ".$key."PathColor='".$_COOKIE[$key."_color"]."';\n";
+			echo "var ".$key."flightPlanCoordinates = [\n";
+			$ArraySize = sizeof($val)-1;
+			$TimeLimit = 60 * 5;
+			$time1 = strtotime($val[0][2]);
+			for($i=0; $i<$ArraySize; $i++)
+			{
+				echo "\t\tnew google.maps.LatLng(".$val[$i]['Latitude'].",".$val[$i]['Longitude'].")";
+				$time2 = strtotime($val[$i][2]);
+				if (($time2 - $time1) > $TimeLimit)
+				{
+					echo "];\n";
+					echo "\t\tvar ".$key."flightPath = new google.maps.Polyline({
+					path: ".$key."flightPlanCoordinates,
+					strokeColor: ".$key."PathColor,
+					strokeOpacity: 1.0,
+					strokeWeight: 2
+					});
+					".$key."flightPath.setMap(map);\n";
+					echo "\t\tvar ".$key."flightPlanCoordinates = [\n";
+				}
+				else { echo ",\n";}
+				$time1 = $time2;
+			}
+			echo "\t\tnew google.maps.LatLng(".$val[$ArraySize]['Latitude'].",".$val[$ArraySize]['Longitude'].")];\n";
+			echo "\t\tvar ".$key."flightPath = new google.maps.Polyline({
+			  path: ".$key."flightPlanCoordinates,
+			  strokeColor: ".$key."PathColor,
+			  strokeOpacity: 1.0,
+			  strokeWeight: 2
+			});
+			
+			".$key."flightPath.setMap(map);";
 		}
-		echo "\t\tnew google.maps.LatLng(".$val[$ArraySize]['Latitude'].",".$val[$ArraySize]['Longitude'].")];\n";
-        echo "\t\tvar ".$key."flightPath = new google.maps.Polyline({
-          path: ".$key."flightPlanCoordinates,
-          strokeColor: color,
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-		
-        ".$key."flightPath.setMap(map);";
-		}
+		//".$_COOKIE[$key."_color"]."
 		?>
-		
-		
       }
-	  $(function(){
-		$('.enable').click(function(e){ $(e.target).children().click();});
-		$('.size').styleddropdown();
-	  });
-	  function desu()
-	  {
-	   map.setCenter(new google.maps.LatLng(37.4569, 22.1569));
-	  }
-	   function d2(rowName)
-	   {
-			 $('.removeCB')
-	   }	
+	$(function(){
+		//$('.enable').click(function(e){ $(e.target).children().click();});
+		//$('.size').styleddropdown();
+		//$('.removeCB').click(function(e){ $(e.target).attr() };
+		$('.Lim').change(function(e)
+		{
+			$.cookie(e.target.name,e.target.value);
+		});
+		$('.Clr').change(function(e){
+			$.cookie(e.target.name,ColorConvert(e.target.value));
+		});
+	});
+
+	function desu(x,y)
+	{
+	map.setCenter(new google.maps.LatLng(x,y));
+	}
+	/*
+	function ChangeLimit()
+	{
+		var Options = $('#OptonForm').serializeArray();
+		alert(Options);
+	}
+	*/
+	function ColorConvert(color)
+	{
+		var hexcolor;
+		switch (color){
+		case 'red':
+		hexcolor = '#FF0000';
+		break;
+		case 'green':
+		hexcolor = '#00FF00';
+		break;
+		case 'blue':
+		hexcolor = '#0000FF';
+		break;
+		default : 
+		hexcolor = '#000000';
+		}
+		return hexcolor;
+	}
     </script>
 </head>
+
 <body onload="initialize()">
 	<div class="main" align="center">
 		<div class="top" align = "right">
@@ -118,7 +166,7 @@ for($i=0;$i<count($friends);$i++)
 			<div id="map-canvas"></div>
 		</div>
 		<div class="navbar column">
-			<div class="addUser">
+			<!--<div class="addUser">
 				<form class="navbar-container" action="test.php" method="POST">
 					<table>
 						<tr><th>Добавить пользователя</th></tr>
@@ -147,36 +195,47 @@ for($i=0;$i<count($friends);$i++)
 					</table>
 				</form>
 			</div>
+			-->
 			<div class="Client">
-			<form class="navbar-container">
+			<form class="navbar-container" id="OptonForm" >
 				<table class="users white-background">
-				<tr><th>user</th><th>points</th><th>Цвет</th><th>Удалить</th></tr>
+				<tr><th>Пользователь</th><th>Точки</th><th>Цвет</th><!--<th>Удалить</th>--></tr>
 				<?php  
 				// тут генерируется табличка с пользователями
+				// $key - Имя пользователя
+				// $CurrentPossition - последняя координата (текущее положение пользователя)
 				foreach($coords as $key => $val)
 				{
+					$CurrentPosition = array_pop($coords[$key]);
 					echo "<tr id=".$key.">\n
-						<td class=\"usrname\" onclick=\"desu()\">".$key."</td>\n
+						<td class=\"usrname\" onclick=\"desu(".$CurrentPosition[0].",".$CurrentPosition[1].")\">".$key."</td>\n
 						<td class=\"points\">\n
-							<select name=".$key."['points']>\n
-								<option>10</option>\n
-								<option>20</option>\n
-								<option>30</option>\n
+							<select name=".$key."_limit class=\"Lim\">\n
+								<option "; if($_COOKIE[$key."_limit"] == 5) {echo 'selected';} echo ">5</option>\n
+								<option "; if($_COOKIE[$key."_limit"] == 10) {echo 'selected';} echo ">10</option>\n
+								<option "; if($_COOKIE[$key."_limit"] == 25) {echo 'selected';} echo ">25</option>\n
+								<option "; if($_COOKIE[$key."_limit"] == 50) {echo 'selected';} echo ">50</option>\n
+								<option "; if($_COOKIE[$key."_limit"] == 100) {echo 'selected';} echo ">100</option>\n
+								<option "; if($_COOKIE[$key."_limit"] == 250) {echo 'selected';} echo ">250</option>\n
+								<option "; if($_COOKIE[$key."_limit"] == 500) {echo 'selected';} echo ">500</option>\n
+								<option "; if($_COOKIE[$key."_limit"] == 1000) {echo 'selected';} echo ">1000</option>\n
 							</select>\n
 						</td>\n
 						<td class=\"color\">\n
-							<select name=".$key."['color']>\n
+							<select name=".$key."_color class=\"Clr\">\n
 								<option>red</option>\n
 								<option>green</option>\n
 								<option>blue</option>\n
 							</select>\n
 						</td>\n
+						<!--
 						<td class=\"enable\">\n
-							<input type=\"checkbox\" name=".$key."['enable'] class=\"removeCB\">\n
+							<input type=\"checkbox\" name=".$key."['enable'] class=\"removeCB\" onclick=\"d2(".$key.")\">\n
 						</td>\n
 					</tr>\n";
-					}
-					?>
+				}
+				?>
+				<tr ><td colspan=2></td><td><input type="submit" value="Применить"></td></tr>-->
 				</table>
 			</form>
 			</div>
@@ -185,3 +244,11 @@ for($i=0;$i<count($friends);$i++)
 	</div>
 </body>
 </html>
+<?
+/*
+echo "<pre>";
+print_r($coords);
+echo $limit;
+echo "</pre>";
+*/
+?>
