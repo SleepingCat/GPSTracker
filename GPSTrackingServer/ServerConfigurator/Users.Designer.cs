@@ -180,6 +180,7 @@
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(74, 22);
             this.toolStripButton1.Text = "Применить";
+            this.toolStripButton1.Click += new System.EventHandler(this.bApplay_Click);
             // 
             // bAccess
             // 
@@ -189,6 +190,7 @@
             this.bAccess.Name = "bAccess";
             this.bAccess.Size = new System.Drawing.Size(50, 22);
             this.bAccess.Text = "Доступ";
+            this.bAccess.Click += new System.EventHandler(this.bAccess_Click);
             // 
             // bCangePassword
             // 

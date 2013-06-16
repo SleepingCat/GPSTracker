@@ -30,7 +30,7 @@ namespace ServerConfigurator
         {
             if (tbName.Text != "" && tbPassword.Text != "")
             {
-                if (Regex.IsMatch(tbName.Text, @"^\w{3,}$")) { Program._dbConnection.AddUser(tbName.Text, MD5HashGenerate.GetMD5(tbPassword.Text), tbSecret.Text); }
+                if (Regex.IsMatch(tbName.Text, @"^\w{3,}$")) { Program._dbConnection.AddUser(tbName.Text, MD5HashGenerate.GetMD5(tbPassword.Text), tbSecret.Text); MessageBox.Show("Пользователь создан"); }
                 else { MessageBox.Show("Недопистимые символы в имени пользоателся \n\r (Используйте только цифры и буквы латинского алфавита)"); }
             }
         }

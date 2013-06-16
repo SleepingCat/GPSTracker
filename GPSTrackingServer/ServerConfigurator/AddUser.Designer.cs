@@ -62,14 +62,14 @@
             this.tbSecret.Name = "tbSecret";
             this.tbSecret.ReadOnly = true;
             this.tbSecret.Size = new System.Drawing.Size(230, 20);
-            this.tbSecret.TabIndex = 0;
+            this.tbSecret.TabIndex = 2;
             // 
             // bGenerateSecret
             // 
             this.bGenerateSecret.Location = new System.Drawing.Point(6, 98);
             this.bGenerateSecret.Name = "bGenerateSecret";
             this.bGenerateSecret.Size = new System.Drawing.Size(230, 22);
-            this.bGenerateSecret.TabIndex = 7;
+            this.bGenerateSecret.TabIndex = 1;
             this.bGenerateSecret.Text = "Сгенерировать секретный код";
             this.bGenerateSecret.UseVisualStyleBackColor = true;
             this.bGenerateSecret.Click += new System.EventHandler(this.bGenerateSecret_Click);
@@ -79,7 +79,7 @@
             this.bSave.Location = new System.Drawing.Point(6, 152);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(103, 30);
-            this.bSave.TabIndex = 7;
+            this.bSave.TabIndex = 3;
             this.bSave.Text = "Сохранить";
             this.bSave.UseVisualStyleBackColor = true;
             this.bSave.Click += new System.EventHandler(this.bSave_Click);
@@ -89,7 +89,7 @@
             this.bCancel.Location = new System.Drawing.Point(128, 152);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(108, 30);
-            this.bCancel.TabIndex = 7;
+            this.bCancel.TabIndex = 4;
             this.bCancel.Text = "Отмена";
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
@@ -103,7 +103,7 @@
             this.groupBox2.Location = new System.Drawing.Point(11, 19);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(221, 73);
-            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             // 
             // tbPassword
@@ -111,14 +111,14 @@
             this.tbPassword.Location = new System.Drawing.Point(62, 43);
             this.tbPassword.Name = "tbPassword";
             this.tbPassword.Size = new System.Drawing.Size(153, 20);
-            this.tbPassword.TabIndex = 0;
+            this.tbPassword.TabIndex = 2;
             // 
             // tbName
             // 
             this.tbName.Location = new System.Drawing.Point(62, 19);
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(153, 20);
-            this.tbName.TabIndex = 0;
+            this.tbName.TabIndex = 1;
             // 
             // label1
             // 
@@ -126,7 +126,7 @@
             this.label1.Location = new System.Drawing.Point(11, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(29, 13);
-            this.label1.TabIndex = 2;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Имя";
             // 
             // label2

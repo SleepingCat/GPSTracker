@@ -69,6 +69,7 @@ for($i=0;$i<count($friends);$i++)
         };
 		map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 		\n";
+
 		foreach($coords as $key => $val)
 		{
 			echo "var ".$key."PathColor='".$_COOKIE[$key."_color"]."';\n";
@@ -76,10 +77,14 @@ for($i=0;$i<count($friends);$i++)
 			$ArraySize = sizeof($val)-1;
 			$TimeLimit = 60 * 5;
 			$time1 = strtotime($val[0][2]);
+			$PathLength = 0;
+			$Point1['Latitude'] = $val[0]['Latitude'];
+			$Point1['Longitude'] = $val[0]['Longitude'];
 			for($i=0; $i<$ArraySize; $i++)
 			{
 				echo "\t\tnew google.maps.LatLng(".$val[$i]['Latitude'].",".$val[$i]['Longitude'].")";
 				$time2 = strtotime($val[$i][2]);
+				$PathLength += latlng2distance($Point1['Latitude'],$Point1['Longitude'],$val[$i]['Latitude'],$val[$i]['Longitude']);
 				if (($time2 - $time1) > $TimeLimit)
 				{
 					echo "];\n";
@@ -103,7 +108,14 @@ for($i=0;$i<count($friends);$i++)
 			  strokeWeight: 2
 			});
 			
-			".$key."flightPath.setMap(map);";
+			".$key."flightPath.setMap(map);\n";
+			$CurrentPosition = array_pop($coords[$key]);
+			echo "var ".$key."_LastPosition = new google.maps.LatLng(".$CurrentPosition['Latitude'].",".$CurrentPosition['Longitude'].");\n";
+			echo "var ".$key."_marker = new google.maps.Marker({
+			position: ".$key."_LastPosition,
+			map: map,
+			title: 'Проделанный путь: ".$PathLength." метров".'\r\n'."Долгота:".$CurrentPosition['Latitude'].'\r\n'."Широта:".$CurrentPosition['Longitude'].'\r\n'."Скорость:".$CurrentPosition['Time']."'
+			});";
 		}
 		//".$_COOKIE[$key."_color"]."
 		?>

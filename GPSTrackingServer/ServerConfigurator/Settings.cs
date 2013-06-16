@@ -116,7 +116,7 @@ namespace ServerConfigurator
             ENGINE=InnoDB
             DEFAULT CHARACTER SET=utf8 COLLATE=utf8_bin
             AUTO_INCREMENT=7
-            ROW_FORMAT=DYNAMIC;go;
+            ROW_FORMAT=DYNAMIC;
             ";
             Program._dbConnection.ExecuteQuery(query);
         }

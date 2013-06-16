@@ -19,7 +19,8 @@ namespace ServerConfigurator
         public Users()
         {
             InitializeComponent();
-            _bs.DataSource = Program._dbConnection.LoadUsersTable();
+            this.dataGridView1.DataSource = _bs;
+            this.bindingNavigator1.BindingSource = _bs;        
             RefreshGrid();
         }
 
