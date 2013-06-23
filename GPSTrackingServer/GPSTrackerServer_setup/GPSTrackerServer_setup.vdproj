@@ -267,7 +267,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:GPSTrackerServer_setup"
         "ProductCode" = "8:{F108CF38-240E-4869-8E97-70C269F38839}"
-        "PackageCode" = "8:{92B0F512-2D8D-454F-A0B1-14C9AF51E7BE}"
+        "PackageCode" = "8:{5E0B19FB-8E79-4836-9C94-618A6DE91CC1}"
         "UpgradeCode" = "8:{A64CB397-75A3-4C13-BF7A-68D62AFDAF03}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -387,6 +387,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_4885DF38E77246B7968E9582868EDA93"
+            {
+            "Name" = "8:ServerConfigurator"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_F6B825A2D6AC483DB87F94ECB9B0546F"
+            "Folder" = "8:_7916F9FC52DD49DCB335686CA242E652"
+            "WorkingFolder" = "8:_F1FF893DED0D40B281FC4CD3F92F015C"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7E33B612919C409C9D6D04A6ECDCC5BB"
             {
             "Name" = "8:ServerConfigurator"
