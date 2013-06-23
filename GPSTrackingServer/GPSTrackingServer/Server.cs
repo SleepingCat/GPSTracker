@@ -70,34 +70,46 @@ namespace GPSTrackerServer
                 Client.AuthorizationSuccess += new ClientConnection.ConnectionEvent(Client_AuthorizationSuccess);
                 Client.Disconnected += new ClientConnection.ConnectionEvent(Client_disconnected);
 
-                Output.Write(e.AcceptSocket.RemoteEndPoint + "Trying to connect", 2);
+                Output.Write(e.AcceptSocket.RemoteEndPoint + " Trying to connect", 2);
                 //Console.WriteLine("{0} Trying to connect", e.AcceptSocket.RemoteEndPoint);
             }
             e.AcceptSocket = null;
             if(Clients.Count < cfg.MaxClients) AcceptAsync(AcceptAsyncArgs);
         }
 
+        /// <summary>
+        /// Обработчик события оключения клиента
+        /// </summary>
+        /// <param name="sender">Клиент</param>
+        /// <param name="message">Сообщение о причине отключения</param>
         void Client_disconnected(ClientConnection sender, string message)
         {
             Clients.Remove(sender);
-            //Console.WriteLine(message);
             Output.Write(message, 2);
         }
 
+        /// <summary>
+        /// Обработчик успешной авторизации клиента
+        /// </summary>
+        /// <param name="sender">Клиент</param>
+        /// <param name="message">Сообщение об успешной авторизации</param>
         void Client_AuthorizationSuccess(ClientConnection sender, string message)
         {
             Clients.Add(sender);
             sender.SendAsync("Auth Success");
-            //Console.WriteLine(message);
             Output.Write(message, 2);
         }
 
+        /// <summary>
+        /// Обработчик неудачной авторизации клиента
+        /// </summary>
+        /// <param name="sender">Клиент</param>
+        /// <param name="message">Сообщение о неудачной авторизации</param>
         void Client_AuthorizationFaild(ClientConnection sender, string message)
         {
             sender.SendAsync("Auth Failed");
             sender.CloseConnection();
             Clients.Remove(sender);
-            //Console.WriteLine(message);
             Output.Write(message, 2);
         }       
         
@@ -129,12 +141,16 @@ namespace GPSTrackerServer
                 catch (Exception ex)
                 {
                     Output.Write(ex.Message, 1);
-                    //Console.WriteLine(ex.Message);
                     Clients.Remove(Cl);
                 }
             }
         }
-
+        
+        /// <summary>
+        /// Возвращает ссылку на объект клиентского подключения по имени пользователя
+        /// </summary>
+        /// <param name="_username">Имя пользователя</param>
+        /// <returns>Клиентское подключение</returns>
         private ClientConnection GetDescriptorByUserName(string _username)
         {
             lock (Clients)
@@ -145,21 +161,34 @@ namespace GPSTrackerServer
             return null;
         }
 
+        /// <summary>
+        /// Отправляет пользователю сообщение
+        /// </summary>
+        /// <param name="_username">Имя поьзователя</param>
+        /// <param name="_msg">Сообщение</param>
         private void Send(string _username, string _msg )
         {
             ClientConnection cl = GetDescriptorByUserName(_username);
-            if (cl == null) { Output.Write("Client " + _username + " not found", 2); /*Console.WriteLine("Client " + _username + " not found");*/ }
+            if (cl == null) { Output.Write("Client " + _username + " not found", 2);}
             else { cl.SendAsync(_msg); }
         }
 
+        /// <summary>
+        /// Отключает от серверауказанного пользователя
+        /// </summary>
+        /// <param name="_username">Имя пользователя</param>
+        /// <returns></returns>
         private bool KickUser(string _username)
         {
             ClientConnection cl = GetDescriptorByUserName(_username);
-            if (cl == null) { Output.Write("Client " + _username + " not found", 2); /*Console.WriteLine("Client " + _username + " not found");*/ }
+            if (cl == null) { Output.Write("Client " + _username + " not found", 2); }
             else { cl.CloseConnection(); Clients.Remove(cl); return true; }
             return false;
         }
 
+        /// <summary>
+        /// Выводит список пользователей
+        /// </summary>
         private void UsersList()
         {
             lock (Clients)
@@ -172,6 +201,12 @@ namespace GPSTrackerServer
             }
         }
 
+        /// <summary>
+        /// разбивает строку в массив
+        /// </summary>
+        /// <param name="inputString">входная строка</param>
+        /// <param name="separator">разделитель</param>
+        /// <returns></returns>
         private string[] Explode(string inputString, string separator)
         {
             string[] exploded = new string[2];
@@ -189,6 +224,11 @@ namespace GPSTrackerServer
             return exploded;
         }
 
+        /// <summary>
+        /// Интерпретатор команд с консоли сервера
+        /// </summary>
+        /// <param name="input">команда</param>
+        /// <returns></returns>
         public string Command(string input)
         {
             string[] result = Explode(input," ");

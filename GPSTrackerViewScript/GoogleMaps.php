@@ -1,36 +1,11 @@
 <?
 // запускаем сессию
 session_start();
-// функция удаляет пустые элементы массива
-function ArrayTrim(&$a)
-{
-	foreach($a as $k => $v)
-	if ($v=='') unset($a[$k]);
-	return $a;
-}
-
 // проверяем залогинился ли пользователь
 if(!(isset($_SESSION['username']) && ($_COOKIE['auth'] == "1"))){session_destroy(); Die("Авторизуйтесь!");}
-require_once("./files/DB/DBConnection.php");
 $username = $_SESSION['username'];
-
-// получаем друзей пользователя, друзья в данном случае - те пользователи чьи маршруты можно просматривать и для каждого из них получаем координаты перемещения
-$query = @mysql_query("SELECT Friends FROM `Users` WHERE UserName = '".$username."'") or die (mysql_error());
-$friendsStr = @mysql_fetch_array($query);
-$friends = ArrayTrim(explode(";",$friendsStr[0]));
-array_unshift($friends, $username);
-for($i=0;$i<count($friends);$i++)
-{
-	if (isset($_COOKIE[$friends[$i].'_limit'])) {$limit = $_COOKIE[$friends[$i].'_limit'];} else {$limit=10;}
-	$query = @mysql_query("SELECT Latitude, Longitude, Time FROM `$friends[$i]` ORDER BY `Time` asc LIMIT $limit") or die (mysql_error());
-
-	while($result = @mysql_fetch_array($query))
-	{ 				
-		//print_r($result);
-		$coords[$friends[$i]][] = $result;
-	}
-}
-
+require_once("./files/DB/DBConnection.php");
+require_once("./files/DB/Functions.php");
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -74,62 +49,65 @@ for($i=0;$i<count($friends);$i++)
 		{
 			echo "var ".$key."PathColor='".$_COOKIE[$key."_color"]."';\n";
 			echo "var ".$key."flightPlanCoordinates = [\n";
+			echo "\t\tnew google.maps.LatLng(".$val[0]['Latitude'].",".$val[0]['Longitude'].")";
 			$ArraySize = sizeof($val)-1;
 			$TimeLimit = 60 * 5;
 			$time1 = strtotime($val[0][2]);
 			$PathLength = 0;
 			$Point1['Latitude'] = $val[0]['Latitude'];
 			$Point1['Longitude'] = $val[0]['Longitude'];
+
+
 			for($i=0; $i<$ArraySize; $i++)
 			{
-				echo "\t\tnew google.maps.LatLng(".$val[$i]['Latitude'].",".$val[$i]['Longitude'].")";
+
 				$time2 = strtotime($val[$i][2]);
 				$PathLength += latlng2distance($Point1['Latitude'],$Point1['Longitude'],$val[$i]['Latitude'],$val[$i]['Longitude']);
 				if (($time2 - $time1) > $TimeLimit)
 				{
+
 					echo "];\n";
 					echo "\t\tvar ".$key."flightPath = new google.maps.Polyline({
 					path: ".$key."flightPlanCoordinates,
-					strokeColor: ".$key."PathColor,
+					strokeColor: '".$_COOKIE[$key."_color"]."',
 					strokeOpacity: 1.0,
 					strokeWeight: 2
 					});
 					".$key."flightPath.setMap(map);\n";
-					echo "\t\tvar ".$key."flightPlanCoordinates = [\n";
+					echo "\t\tvar ".$key."flightPlanCoordinates = [";
+					echo "new google.maps.LatLng(".$val[$i]['Latitude'].",".$val[$i]['Longitude'].")";
 				}
-				else { echo ",\n";}
+				else {
+				echo ",\n\t\tnew google.maps.LatLng(".$val[$i]['Latitude'].",".$val[$i]['Longitude'].")";}
 				$time1 = $time2;
 			}
-			echo "\t\tnew google.maps.LatLng(".$val[$ArraySize]['Latitude'].",".$val[$ArraySize]['Longitude'].")];\n";
+			echo ",\n\t\tnew google.maps.LatLng(".$val[$ArraySize]['Latitude'].",".$val[$ArraySize]['Longitude'].")];\n";
 			echo "\t\tvar ".$key."flightPath = new google.maps.Polyline({
 			  path: ".$key."flightPlanCoordinates,
-			  strokeColor: ".$key."PathColor,
+			  strokeColor: '".$_COOKIE[$key."_color"]."',
 			  strokeOpacity: 1.0,
 			  strokeWeight: 2
 			});
 			
 			".$key."flightPath.setMap(map);\n";
-			$CurrentPosition = array_pop($coords[$key]);
-			echo "var ".$key."_LastPosition = new google.maps.LatLng(".$CurrentPosition['Latitude'].",".$CurrentPosition['Longitude'].");\n";
+			$CurrentPosition[$key] = end($coords[$key]);
+			echo "var ".$key."_LastPosition = new google.maps.LatLng(".$CurrentPosition[$key]['Latitude'].",".$CurrentPosition[$key]['Longitude'].");\n";
 			echo "var ".$key."_marker = new google.maps.Marker({
 			position: ".$key."_LastPosition,
 			map: map,
-			title: 'Проделанный путь: ".$PathLength." метров".'\r\n'."Долгота:".$CurrentPosition['Latitude'].'\r\n'."Широта:".$CurrentPosition['Longitude'].'\r\n'."Скорость:".$CurrentPosition['Time']."'
+			title: '".$key.'\r\n'."Проделанный путь: ".round($PathLength,3)." метров".'\r\n'."Скорость: ".Round($CurrentPosition[$key]['Speed']/1.852,3).' км/час\r\n'."Долгота:".$CurrentPosition[$key]['Latitude'].'\r\n'."Широта:".$CurrentPosition[$key]['Longitude'].'\r\n'."Дата:".$CurrentPosition[$key]['Time']."'
 			});";
 		}
-		//".$_COOKIE[$key."_color"]."
 		?>
       }
 	$(function(){
-		//$('.enable').click(function(e){ $(e.target).children().click();});
-		//$('.size').styleddropdown();
-		//$('.removeCB').click(function(e){ $(e.target).attr() };
 		$('.Lim').change(function(e)
 		{
 			$.cookie(e.target.name,e.target.value);
 		});
 		$('.Clr').change(function(e){
 			$.cookie(e.target.name,ColorConvert(e.target.value));
+			alert(ColorConvert(e.target.value));
 		});
 	});
 
@@ -137,13 +115,7 @@ for($i=0;$i<count($friends);$i++)
 	{
 	map.setCenter(new google.maps.LatLng(x,y));
 	}
-	/*
-	function ChangeLimit()
-	{
-		var Options = $('#OptonForm').serializeArray();
-		alert(Options);
-	}
-	*/
+
 	function ColorConvert(color)
 	{
 		var hexcolor;
@@ -157,7 +129,7 @@ for($i=0;$i<count($friends);$i++)
 		case 'blue':
 		hexcolor = '#0000FF';
 		break;
-		default : 
+		default: 
 		hexcolor = '#000000';
 		}
 		return hexcolor;
@@ -178,36 +150,6 @@ for($i=0;$i<count($friends);$i++)
 			<div id="map-canvas"></div>
 		</div>
 		<div class="navbar column">
-			<!--<div class="addUser">
-				<form class="navbar-container" action="test.php" method="POST">
-					<table>
-						<tr><th>Добавить пользователя</th></tr>
-						<tr>
-							<td class="usrmname">
-								<input type="text" name="usr">
-							</td>
-							<td class="points">
-								<select name="points">
-									<option>10</option>
-									<option>20</option>
-									<option>30</option>
-								</select>
-							</td>
-							<td class="color">
-								<select name="color">
-									<option>red</option>
-									<option>green</option>
-									<option>blue</option>
-								</select>
-							</td>
-							<td class="enable">
-								<input type="submit" value="Добавить">
-							</td>
-						</tr>
-					</table>
-				</form>
-			</div>
-			-->
 			<div class="Client">
 			<form class="navbar-container" id="OptonForm" >
 				<table class="users white-background">
@@ -218,9 +160,8 @@ for($i=0;$i<count($friends);$i++)
 				// $CurrentPossition - последняя координата (текущее положение пользователя)
 				foreach($coords as $key => $val)
 				{
-					$CurrentPosition = array_pop($coords[$key]);
 					echo "<tr id=".$key.">\n
-						<td class=\"usrname\" onclick=\"desu(".$CurrentPosition[0].",".$CurrentPosition[1].")\">".$key."</td>\n
+						<td class=\"usrname\" onclick=\"desu(".$CurrentPosition[$key]['Latitude'].",".$CurrentPosition[$key]['Longitude'].")\">".$key."</td>\n
 						<td class=\"points\">\n
 							<select name=".$key."_limit class=\"Lim\">\n
 								<option "; if($_COOKIE[$key."_limit"] == 5) {echo 'selected';} echo ">5</option>\n
@@ -244,10 +185,11 @@ for($i=0;$i<count($friends);$i++)
 						<td class=\"enable\">\n
 							<input type=\"checkbox\" name=".$key."['enable'] class=\"removeCB\" onclick=\"d2(".$key.")\">\n
 						</td>\n
+						-->
 					</tr>\n";
 				}
 				?>
-				<tr ><td colspan=2></td><td><input type="submit" value="Применить"></td></tr>-->
+				<tr ><td colspan=2></td><td><input type="submit" value="Применить"></td></tr>
 				</table>
 			</form>
 			</div>
@@ -256,11 +198,3 @@ for($i=0;$i<count($friends);$i++)
 	</div>
 </body>
 </html>
-<?
-/*
-echo "<pre>";
-print_r($coords);
-echo $limit;
-echo "</pre>";
-*/
-?>

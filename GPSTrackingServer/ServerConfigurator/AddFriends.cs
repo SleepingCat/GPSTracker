@@ -14,26 +14,26 @@ namespace ServerConfigurator
 {
     public partial class AddFriends : Form
     {
-        string name;
+        string id;
 
-        public AddFriends(string _name)
+        public AddFriends(string _id)
         {
             InitializeComponent();
-            name = _name;
+            id = _id;
             FillData();
         }
 
         // заполняет форму данными
         void FillData()
         {
-            User u = Program._dbConnection.GetUser(name);
+            User u = Program._dbConnection.GetUserByID(id);
             this.tbSecret.Text = u.Invite;
             this.Text = u.Name;
             string[] friends = u.Friends.Split(';');
             this.clbFriends.Items.Clear();
             foreach (string friend in friends)
             {
-                User usr = Program._dbConnection.GetUser(friend);
+                User usr = Program._dbConnection.GetUserByID(friend);
                 if (!string.IsNullOrEmpty(friend))
                     this.clbFriends.Items.Add(usr);
             }
@@ -42,8 +42,8 @@ namespace ServerConfigurator
         // генерирует секретный код для клиента
         private void bGenerate_Click(object sender, EventArgs e)
         {
-            this.tbSecret.Text = Program._dbConnection.CreateInvite(name);
-            Program._dbConnection.ExecuteQuery("Update Users set Invite='" + this.tbSecret.Text + "' where UserName='" + name + "'");
+            this.tbSecret.Text = Program._dbConnection.CreateInvite(id);
+            Program._dbConnection.ExecuteQuery("Update Users set Invite='" + this.tbSecret.Text + "' where UserID='" + id + "'");
         }
 
         // добавляет возможность просмотра маршрута, чей секретный код был введен
@@ -53,14 +53,14 @@ namespace ServerConfigurator
             if (string.IsNullOrEmpty(FriendID)) { MessageBox.Show("Пользователь с таким кодом не найден."); }
             else 
             {
-                User u = Program._dbConnection.GetUser(FriendID);
+                User u = Program._dbConnection.GetUserByID(FriendID);
                 this.clbFriends.Items.Add(u);
             }
         }
 
         private void bSave_Click(object sender, EventArgs e)
         {
-            Program._dbConnection.AddFriends(this.name, this.clbFriends);
+            Program._dbConnection.AddFriends(this.id, this.clbFriends);
         }
 
         bool AllChecked = false;

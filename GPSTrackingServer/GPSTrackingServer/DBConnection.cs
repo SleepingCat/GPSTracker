@@ -52,7 +52,7 @@ namespace GPSTrackerServer
         /// </summary>
         /// <param name="UserName">Имя пользователя</param>
         /// <returns>хэш пароля</returns>
-        public string GetUser(string UserName)
+        internal string GetUser(string UserName)
         {
             try
             {
@@ -85,11 +85,31 @@ namespace GPSTrackerServer
             }
             catch (Exception ex)
             {
-                Output.Write(ex.Message, 1);
+                Output.Write(ex.Message + "(" +query+ ")", 1);
             }
         }
 
         public void Open() { Connection.Open(); }
         public void Close() { Connection.Close(); }
+
+        internal string GetUserID(string ClientName)
+        {
+            try
+            {
+                string query = "select UserID from Users where UserName='" + ClientName + "'";
+                myCommand = new MySqlCommand(query, Connection);
+                string result = myCommand.ExecuteScalar().ToString();
+                return result;
+            }
+            catch (NullReferenceException)
+            {
+                return "User not found";
+            }
+            catch (Exception ex)
+            {
+                Output.Write(ex.Message, 1);
+                return ex.Message;
+            }
+        }
     }
 }

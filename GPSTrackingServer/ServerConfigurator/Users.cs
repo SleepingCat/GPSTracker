@@ -50,7 +50,7 @@ namespace ServerConfigurator
 
         private void bAccess_Click(object sender, EventArgs e)
         {
-            AddFriends addfr = new AddFriends(this.dataGridView1.CurrentRow.Cells["UserName"].Value.ToString());
+            AddFriends addfr = new AddFriends(this.dataGridView1.CurrentRow.Cells["UserID"].Value.ToString());
             addfr.ShowDialog();
             RefreshGrid();
         }

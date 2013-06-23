@@ -54,7 +54,6 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.bPath = new System.Windows.Forms.Button();
             this.tbLogPath = new System.Windows.Forms.TextBox();
-            this.cbLog = new System.Windows.Forms.CheckBox();
             this.cbLogConnectMessages = new System.Windows.Forms.CheckBox();
             this.cbLogErrors = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -62,12 +61,13 @@
             this.cbConClientGPSData = new System.Windows.Forms.CheckBox();
             this.cbConErrors = new System.Windows.Forms.CheckBox();
             this.cbConConnectMessages = new System.Windows.Forms.CheckBox();
+            this.cbLog = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.базаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьПустуюБазуДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.добавитьПользователяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -79,10 +79,12 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbConsole);
             this.groupBox1.Controls.Add(this.bSaveAndStart);
             this.groupBox1.Controls.Add(this.bDefault);
             this.groupBox1.Controls.Add(this.bSave);
             this.groupBox1.Controls.Add(this.bCancel);
+            this.groupBox1.Controls.Add(this.cbLog);
             this.groupBox1.Controls.Add(this.groupBox5);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox3);
@@ -308,7 +310,6 @@
             // 
             this.groupBox3.Controls.Add(this.bPath);
             this.groupBox3.Controls.Add(this.tbLogPath);
-            this.groupBox3.Controls.Add(this.cbLog);
             this.groupBox3.Controls.Add(this.cbLogConnectMessages);
             this.groupBox3.Controls.Add(this.cbLogErrors);
             this.groupBox3.Location = new System.Drawing.Point(330, 152);
@@ -325,6 +326,7 @@
             this.bPath.TabIndex = 2;
             this.bPath.Text = "Обзор";
             this.bPath.UseVisualStyleBackColor = true;
+            this.bPath.Click += new System.EventHandler(this.bPath_Click);
             // 
             // tbLogPath
             // 
@@ -332,16 +334,6 @@
             this.tbLogPath.Name = "tbLogPath";
             this.tbLogPath.Size = new System.Drawing.Size(246, 20);
             this.tbLogPath.TabIndex = 1;
-            // 
-            // cbLog
-            // 
-            this.cbLog.AutoSize = true;
-            this.cbLog.Location = new System.Drawing.Point(6, 0);
-            this.cbLog.Name = "cbLog";
-            this.cbLog.Size = new System.Drawing.Size(76, 17);
-            this.cbLog.TabIndex = 0;
-            this.cbLog.Text = "Вести лог";
-            this.cbLog.UseVisualStyleBackColor = true;
             // 
             // cbLogConnectMessages
             // 
@@ -365,7 +357,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.cbConsole);
             this.groupBox2.Controls.Add(this.cbConClientGPSData);
             this.groupBox2.Controls.Add(this.cbConErrors);
             this.groupBox2.Controls.Add(this.cbConConnectMessages);
@@ -378,12 +369,13 @@
             // cbConsole
             // 
             this.cbConsole.AutoSize = true;
-            this.cbConsole.Location = new System.Drawing.Point(6, 0);
+            this.cbConsole.Location = new System.Drawing.Point(18, 150);
             this.cbConsole.Name = "cbConsole";
             this.cbConsole.Size = new System.Drawing.Size(202, 17);
             this.cbConsole.TabIndex = 0;
             this.cbConsole.Text = "Отображать сообщения в консоле";
             this.cbConsole.UseVisualStyleBackColor = true;
+            this.cbConsole.CheckedChanged += new System.EventHandler(this.cbConsole_CheckedChanged);
             // 
             // cbConClientGPSData
             // 
@@ -415,6 +407,17 @@
             this.cbConConnectMessages.Text = "Сообщения Подключения/Отключения клиентов";
             this.cbConConnectMessages.UseVisualStyleBackColor = true;
             // 
+            // cbLog
+            // 
+            this.cbLog.AutoSize = true;
+            this.cbLog.Location = new System.Drawing.Point(336, 150);
+            this.cbLog.Name = "cbLog";
+            this.cbLog.Size = new System.Drawing.Size(76, 17);
+            this.cbLog.TabIndex = 0;
+            this.cbLog.Text = "Вести лог";
+            this.cbLog.UseVisualStyleBackColor = true;
+            this.cbLog.CheckedChanged += new System.EventHandler(this.cbLog_CheckedChanged);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -424,6 +427,12 @@
             this.statusStrip1.Size = new System.Drawing.Size(671, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lStatus
+            // 
+            this.lStatus.Name = "lStatus";
+            this.lStatus.Size = new System.Drawing.Size(25, 17);
+            this.lStatus.Text = "      ";
             // 
             // menuStrip1
             // 
@@ -458,12 +467,6 @@
             this.добавитьПользователяToolStripMenuItem.Text = "Управление пользователями";
             this.добавитьПользователяToolStripMenuItem.Click += new System.EventHandler(this.добавитьПользователяToolStripMenuItem_Click);
             // 
-            // lStatus
-            // 
-            this.lStatus.Name = "lStatus";
-            this.lStatus.Size = new System.Drawing.Size(25, 17);
-            this.lStatus.Text = "      ";
-            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -476,6 +479,7 @@
             this.Name = "Settings";
             this.Text = "Конфигуратор сервера";
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);

@@ -122,20 +122,6 @@ namespace ServerConfigurator
                 MySqlCommand Command = new MySqlCommand(query, Connection);
                 Connection.Open(); 
                 Command.ExecuteNonQuery();
-
-                query = "CREATE TABLE `" + Username + @"` (
-                `Latitude`  decimal(10,7) NULL DEFAULT NULL ,
-                `Longitude`  decimal(10,7) NULL DEFAULT NULL ,
-                `Speed`  decimal(10,7) NULL DEFAULT NULL ,
-                `Time`  datetime NULL DEFAULT NULL 
-                )
-                ENGINE=InnoDB
-                DEFAULT CHARACTER SET=utf8 COLLATE=utf8_bin
-                ROW_FORMAT=FIXED
-                ;go;";
-
-                Command = new MySqlCommand(query, Connection);
-                Command.ExecuteNonQuery();
                 Connection.Close(); 
             }
             catch (Exception ex) { return ex.Message; }
@@ -169,14 +155,14 @@ namespace ServerConfigurator
         /// </summary>
         /// <param name="uname">пользователь, которому предоставляется доступ</param>
         /// <param name="friendsList">пользователи к которым предоставляется доступ</param>
-        public void AddFriends(string uname, CheckedListBox friendsList)
+        public void AddFriends(string id, CheckedListBox friendsList)
         {
             string friends = "";
             foreach (User u in friendsList.Items)
             {
-                friends += u.Name + ";";
+                friends += u.id + ";";
             }
-            string query = "update Users set Friends='" + friends + "' where Username = '" + uname + "'";
+            string query = "update Users set Friends='" + friends + "' where UserID = '" + id + "'";
             this.ExecuteQuery(query);
         }
 
@@ -185,13 +171,13 @@ namespace ServerConfigurator
         /// </summary>
         /// <param name="name">имя пользователя</param>
         /// <returns>данные о пользователе</returns>
-        public User GetUser(string name)
+        public User GetUserByID(string id)
         {
-            if (string.IsNullOrEmpty(name)) { return null; }
+            if (string.IsNullOrEmpty(id)) { return null; }
             User u = new User();
             try
             {
-                string query = "select UserId, UserName, Invite, Friends from Users where UserName='" + name + "'";
+                string query = "select UserId, UserName, Invite, Friends from Users where UserID='" + id + "'";
                 Connection = new MySqlConnection("Database=" + Program.cfg.DB + ";Data Source=" + Program.cfg.DBhost + ";User Id=" + Program.cfg.DBuser + ";Password=" + Program.cfg.DBpassword + ";");
                 Connection.Open();
                 MySqlCommand Command = new MySqlCommand(query, Connection);
@@ -221,7 +207,7 @@ namespace ServerConfigurator
             try
             {
                 string result = null;
-                string query = "Select UserName from Users where Invite='" + secret + "'";
+                string query = "Select UserID from Users where Invite='" + secret + "'";
                 Connection = new MySqlConnection("Database=" + Program.cfg.DB + ";Data Source=" + Program.cfg.DBhost + ";User Id=" + Program.cfg.DBuser + ";Password=" + Program.cfg.DBpassword + ";");
                 Connection.Open();
                 MySqlCommand Command = new MySqlCommand(query, Connection);

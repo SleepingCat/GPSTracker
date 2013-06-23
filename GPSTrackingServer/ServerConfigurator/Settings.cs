@@ -104,19 +104,38 @@ namespace ServerConfigurator
         private void создатьПустуюБазуДанныхToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string query = @"
-            CREATE TABLE `Users` (
-            `UserName`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-            `Password`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-            `Invite`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-            `Friends`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
-            `UserID`  int(11) NOT NULL AUTO_INCREMENT ,
-            `Permissions`  int(1) NOT NULL DEFAULT 0 ,
-            PRIMARY KEY (`UserID`, `UserName`)
-            )
-            ENGINE=InnoDB
-            DEFAULT CHARACTER SET=utf8 COLLATE=utf8_bin
-            AUTO_INCREMENT=7
-            ROW_FORMAT=DYNAMIC;
+            -- Структура таблицы `Coordinates`
+
+            DROP TABLE IF EXISTS `Coordinates`;
+            CREATE TABLE IF NOT EXISTS `Coordinates` (
+              `Longitude` decimal(10,7) DEFAULT NULL,
+              `Latitude` decimal(10,7) DEFAULT NULL,
+              `Speed` decimal(10,7) DEFAULT NULL,
+              `Time` datetime NOT NULL,
+              `UserID` int(11) NOT NULL,
+              PRIMARY KEY (`Time`,`UserID`),
+              KEY `R_1` (`UserID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+            -- --------------------------------------------------------
+            -- Структура таблицы `Users`
+
+            DROP TABLE IF EXISTS `Users`;
+            CREATE TABLE IF NOT EXISTS `Users` (
+              `UserName` varchar(32) DEFAULT NULL,
+              `Password` varchar(32) DEFAULT NULL,
+              `Invite` varchar(32) DEFAULT NULL,
+              `Friends` text,
+              `Access` int(11) DEFAULT '0',
+              `UserID` int(11) NOT NULL AUTO_INCREMENT,
+              PRIMARY KEY (`UserID`),
+              UNIQUE KEY `AK1U` (`UserName`)
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+            --
+            -- Ограничения внешнего ключа таблицы `Coordinates`
+            --
+            ALTER TABLE `Coordinates`
+              ADD CONSTRAINT `coordinates_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE;
             ";
             Program._dbConnection.ExecuteQuery(query);
         }
@@ -127,6 +146,31 @@ namespace ServerConfigurator
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo("GPSTrackingServer.exe");
             System.Diagnostics.Process.Start(psi);
             Environment.Exit(0);
+        }
+
+        private void bPath_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog FBDialog = new FolderBrowserDialog();
+            FBDialog.Description = "Выберите папку для сохранения лога сервера";
+            if (FBDialog.ShowDialog() == DialogResult.OK)
+            { this.tbLogPath.Text = FBDialog.SelectedPath; }
+        }
+
+        private void cbLog_CheckedChanged(object sender, EventArgs e)
+        {
+            var s = (CheckBox) sender;
+            this.groupBox3.Enabled = s.Checked;
+            this.cbLogErrors.Checked = false;
+            this.cbLogConnectMessages.Checked = false;
+        }
+
+        private void cbConsole_CheckedChanged(object sender, EventArgs e)
+        {
+            var s = (CheckBox) sender;
+            this.groupBox2.Enabled = s.Checked;
+            this.cbConErrors.Checked = false;
+            this.cbConConnectMessages.Checked = false;
+            this.cbConClientGPSData.Checked = false;
         }
     }
 }

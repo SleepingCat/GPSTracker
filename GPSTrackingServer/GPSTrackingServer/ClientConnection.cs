@@ -46,6 +46,7 @@ namespace GPSTrackerServer
     class ClientConnection
     {
         public string ClientName { private set; get; }          // Имя клиента (устанавливается при успешной авторизации)
+        private string UserID { set; get; }     // id пользователяиз БД (!!заполняется при авторизации!!) 
         private Socket Sock;                                    // Сокет клиента
         private SocketAsyncEventArgs SockAsyncEventArgs;        // объект необходимый для передачи сообщений 
         private byte[] buff;
@@ -135,6 +136,7 @@ namespace GPSTrackerServer
             if (result == "User not found") { AuthorizationFaild(this, string.Format("{0}: User {1} not found", Sock.RemoteEndPoint, SplitedString[0])); return; }
             if (result != SplitedString[1]) { AuthorizationFaild(this, string.Format("{0}: {1} - Wrong password", Sock.RemoteEndPoint, SplitedString[0])); return; }
             ClientName = SplitedString[0];
+            UserID = db.GetUserID(ClientName);
             AuthorizationSuccess(this, string.Format("{0}: {1} Auth Success", Sock.RemoteEndPoint, ClientName));
         }
 
@@ -165,15 +167,12 @@ namespace GPSTrackerServer
             {
                 SockAsyncEventArgs.UserToken = false;
                 string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
-                if (string.IsNullOrEmpty(str)) { AuthorizationFaild(this,  ClientName + " - Connection Lost"); return; }
+                if (string.IsNullOrEmpty(str)) { AuthorizationFaild(this, "Connection Lost: " + ClientName ); return; }
                 ReceiveAsync(e);
                 Output.Write("Incoming msg from #" + ClientName + ": " + str, 3);
-                //Console.WriteLine("Incoming msg from #{0}: {1}", ClientName, str);
-                //Console.WriteLine(str);
                 Coordinates coords = new Coordinates(str);
-                if (coords.IsGood) db.InsertQuery(string.Format("insert into {0}(Latitude, Longitude, Speed, Time) values('{1}','{2}','{3}','{4}')",
-                    ClientName, coords.Latitude, coords.Longitude, coords.Speed, coords.Time));
-                //SendAsync("You send " + str);
+                if (coords.IsGood) db.InsertQuery(string.Format("insert into Coordinates(UserID, Latitude, Longitude, Speed, Time) values('{0}','{1}','{2}','{3}','{4}')",
+                    UserID, coords.Latitude, coords.Longitude, coords.Speed, coords.Time));
             }
         }
 
@@ -214,7 +213,7 @@ namespace GPSTrackerServer
                 if (!willRaiseEvent)
                     ProcessSend(e);
             }
-            else { Disconnected(this, "Client lost"); }
+            else { Disconnected(this, "Client lost: " + ClientName); }
         }
 
         /// <summary>
