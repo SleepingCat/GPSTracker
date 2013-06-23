@@ -75,32 +75,86 @@ require_once("./files/DB/Functions.php");
 			<?
 			foreach($coords as $key => $val)
 			{
-				echo "				
+			//echo "var ".$key."PathColor='".$_COOKIE[$key."_color"]."';\n";
+			echo "				
+			var ".$Key."_geometry = [";
+			echo "[".$val[0]['Latitude'].", ".$val[0]['Longitude']."]";
+			$ArraySize = sizeof($val)-1;
+			$TimeLimit = 60 * 5;
+			$time1 = strtotime($val[0][2]);
+			$PathLength = 0;
+			$Point1['Latitude'] = $val[0]['Latitude'];
+			$Point1['Longitude'] = $val[0]['Longitude'];
 
-				var geometry = [";
-				$ArraySize = sizeof($val)-1;
-				for($i=0; $i<$ArraySize; $i++)
+			for($i=0; $i<$ArraySize; $i++)
+			{
+
+				$time2 = strtotime($val[$i][2]);
+				$PathLength += latlng2distance($Point1['Latitude'],$Point1['Longitude'],$val[$i]['Latitude'],$val[$i]['Longitude']);
+				if (($time2 - $time1) > $TimeLimit)
 				{
-					echo "[".$val[$i]['Latitude'].", ".$val[$i]['Longitude']."],";
-				
-				//[55.80, 37.30],[55.80, 37.40],[55.70, 37.30],[55.70, 37.40],[55.74, 37.60],[55.77, 37.50]
-				}
-				echo "[".$val[$ArraySize]['Latitude'].", ".$val[$ArraySize]['Longitude']."]],
-	 
-				properties = {
+
+					echo "],\n
+					properties = {
 					hintContent: \"".$key."\"
-				},
-				
-				options = {
+					},
+					options = {
 					draggable: false,
-					strokeColor: '#00ff00',
+					strokeColor: '".((isset($_COOKIE[$key."_color"]) && $_COOKIE[$key."_color"] != "")?$_COOKIE[$key."_color"]:'#FF0000')."',
 					strokeWidth: 2
-				},
+					},
 				
-				polyline = new ymaps.Polyline(geometry, properties, options);
-				myMap.geoObjects.add(polyline);	
-				";
-			} ?>
+					".$Key."_polyline = new ymaps.Polyline(".$Key."_geometry, properties, options);
+					myMap.geoObjects.add(".$Key."_polyline);	
+					
+					var ".$Key."_geometry = [";
+					echo "[".$val[$i]['Latitude'].", ".$val[$i]['Longitude']."]";
+				}
+				else {
+				echo ",\n\t\t [".$val[$i]['Latitude'].", ".$val[$i]['Longitude']."]";}
+				$time1 = $time2;
+			}
+			echo ",\n\t\t [".$val[$ArraySize]['Latitude'].", ".$val[$ArraySize]['Longitude']."]";
+			echo "],\n
+			properties = {
+			hintContent: \"".$key."\"
+			},
+			options = {
+			draggable: false,
+			strokeColor: '".((isset($_COOKIE[$key."_color"]) && $_COOKIE[$key."_color"] != "")?$_COOKIE[$key."_color"]:'#FF0000')."',
+			strokeWidth: 2
+			},
+		
+			".$Key."_polyline = new ymaps.Polyline(".$Key."_geometry, properties, options);";
+
+			$CurrentPosition[$key] = end($coords[$key]);
+			echo "
+			// Создаем геообъект с типом геометрии Точка.
+			".$Key."GeoObject = new ymaps.GeoObject({
+            // Описание геометрии.
+            geometry: {
+                type: \"Point\",
+                coordinates: [".$CurrentPosition[$key]['Latitude'].",".$CurrentPosition[$key]['Longitude']."]
+				},
+				// Свойства.
+				properties: {
+					// Контент метки.
+					iconContent: '".$key."',
+					balloonContent: '".$key.'\r\n'."Проделанный путь: ".round($PathLength,3)." метров".'\r\n'."Скорость: ".Round($CurrentPosition[$key]['Speed']/1.852,3).' км/час\r\n'."Долгота:".$CurrentPosition[$key]['Latitude'].'\r\n'."Широта:".$CurrentPosition[$key]['Longitude'].'\r\n'."Дата:".$CurrentPosition[$key]['Time']."'
+				}
+			}, 
+			{
+            // Опции.
+            // Иконка метки будет растягиваться под размер ее содержимого.
+            preset: 'twirl#redStretchyIcon',
+            draggable: false
+			}),
+			myMap.geoObjects
+			.add(".$Key."_polyline)
+			.add(".$Key."GeoObject);
+			";
+			}
+			?>
 		}
     </script>						
 </head>
