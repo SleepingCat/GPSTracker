@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerConfigurator", "Serve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigLibrary", "ConfigLibrary\ConfigLibrary.csproj", "{11BA2D96-207B-42A4-8ECB-A72910AE6584}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GPSTrackerServer_setup", "GPSTrackerServer_setup\GPSTrackerServer_setup.vdproj", "{4776FBB9-0C7F-45B5-9F02-23CAA044E8AC}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GPSTrackerServer_setup", "GPSTrackerServer_setup\GPSTrackerServer_setup.vdproj", "{142C6373-B0EB-45BA-AEFE-8E3DD89A546D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,12 +51,12 @@ Global
 		{11BA2D96-207B-42A4-8ECB-A72910AE6584}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{11BA2D96-207B-42A4-8ECB-A72910AE6584}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{11BA2D96-207B-42A4-8ECB-A72910AE6584}.Release|x86.ActiveCfg = Release|Any CPU
-		{4776FBB9-0C7F-45B5-9F02-23CAA044E8AC}.Debug|Any CPU.ActiveCfg = Debug
-		{4776FBB9-0C7F-45B5-9F02-23CAA044E8AC}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{4776FBB9-0C7F-45B5-9F02-23CAA044E8AC}.Debug|x86.ActiveCfg = Debug
-		{4776FBB9-0C7F-45B5-9F02-23CAA044E8AC}.Release|Any CPU.ActiveCfg = Release
-		{4776FBB9-0C7F-45B5-9F02-23CAA044E8AC}.Release|Mixed Platforms.ActiveCfg = Release
-		{4776FBB9-0C7F-45B5-9F02-23CAA044E8AC}.Release|x86.ActiveCfg = Release
+		{142C6373-B0EB-45BA-AEFE-8E3DD89A546D}.Debug|Any CPU.ActiveCfg = Debug
+		{142C6373-B0EB-45BA-AEFE-8E3DD89A546D}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{142C6373-B0EB-45BA-AEFE-8E3DD89A546D}.Debug|x86.ActiveCfg = Debug
+		{142C6373-B0EB-45BA-AEFE-8E3DD89A546D}.Release|Any CPU.ActiveCfg = Release
+		{142C6373-B0EB-45BA-AEFE-8E3DD89A546D}.Release|Mixed Platforms.ActiveCfg = Release
+		{142C6373-B0EB-45BA-AEFE-8E3DD89A546D}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

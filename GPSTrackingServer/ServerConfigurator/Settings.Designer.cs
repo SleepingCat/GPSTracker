@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbConsole = new System.Windows.Forms.CheckBox();
             this.bSaveAndStart = new System.Windows.Forms.Button();
             this.bDefault = new System.Windows.Forms.Button();
             this.bSave = new System.Windows.Forms.Button();
             this.bCancel = new System.Windows.Forms.Button();
+            this.cbLog = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbPort = new System.Windows.Forms.TextBox();
@@ -57,11 +60,9 @@
             this.cbLogConnectMessages = new System.Windows.Forms.CheckBox();
             this.cbLogErrors = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cbConsole = new System.Windows.Forms.CheckBox();
             this.cbConClientGPSData = new System.Windows.Forms.CheckBox();
             this.cbConErrors = new System.Windows.Forms.CheckBox();
             this.cbConConnectMessages = new System.Windows.Forms.CheckBox();
-            this.cbLog = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -95,6 +96,17 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настройки";
+            // 
+            // cbConsole
+            // 
+            this.cbConsole.AutoSize = true;
+            this.cbConsole.Location = new System.Drawing.Point(18, 150);
+            this.cbConsole.Name = "cbConsole";
+            this.cbConsole.Size = new System.Drawing.Size(202, 17);
+            this.cbConsole.TabIndex = 0;
+            this.cbConsole.Text = "Отображать сообщения в консоле";
+            this.cbConsole.UseVisualStyleBackColor = true;
+            this.cbConsole.CheckedChanged += new System.EventHandler(this.cbConsole_CheckedChanged);
             // 
             // bSaveAndStart
             // 
@@ -135,6 +147,17 @@
             this.bCancel.Text = "Отмена";
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
+            // 
+            // cbLog
+            // 
+            this.cbLog.AutoSize = true;
+            this.cbLog.Location = new System.Drawing.Point(336, 150);
+            this.cbLog.Name = "cbLog";
+            this.cbLog.Size = new System.Drawing.Size(76, 17);
+            this.cbLog.TabIndex = 0;
+            this.cbLog.Text = "Вести лог";
+            this.cbLog.UseVisualStyleBackColor = true;
+            this.cbLog.CheckedChanged += new System.EventHandler(this.cbLog_CheckedChanged);
             // 
             // groupBox5
             // 
@@ -366,17 +389,6 @@
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             // 
-            // cbConsole
-            // 
-            this.cbConsole.AutoSize = true;
-            this.cbConsole.Location = new System.Drawing.Point(18, 150);
-            this.cbConsole.Name = "cbConsole";
-            this.cbConsole.Size = new System.Drawing.Size(202, 17);
-            this.cbConsole.TabIndex = 0;
-            this.cbConsole.Text = "Отображать сообщения в консоле";
-            this.cbConsole.UseVisualStyleBackColor = true;
-            this.cbConsole.CheckedChanged += new System.EventHandler(this.cbConsole_CheckedChanged);
-            // 
             // cbConClientGPSData
             // 
             this.cbConClientGPSData.AutoSize = true;
@@ -406,17 +418,6 @@
             this.cbConConnectMessages.TabIndex = 2;
             this.cbConConnectMessages.Text = "Сообщения Подключения/Отключения клиентов";
             this.cbConConnectMessages.UseVisualStyleBackColor = true;
-            // 
-            // cbLog
-            // 
-            this.cbLog.AutoSize = true;
-            this.cbLog.Location = new System.Drawing.Point(336, 150);
-            this.cbLog.Name = "cbLog";
-            this.cbLog.Size = new System.Drawing.Size(76, 17);
-            this.cbLog.TabIndex = 0;
-            this.cbLog.Text = "Вести лог";
-            this.cbLog.UseVisualStyleBackColor = true;
-            this.cbLog.CheckedChanged += new System.EventHandler(this.cbLog_CheckedChanged);
             // 
             // statusStrip1
             // 
@@ -475,6 +476,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Settings";
             this.Text = "Конфигуратор сервера";

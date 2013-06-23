@@ -232,6 +232,7 @@
             this.ClientSize = new System.Drawing.Size(714, 531);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.bindingNavigator1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Users";
             this.Text = "Пользователи";
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();

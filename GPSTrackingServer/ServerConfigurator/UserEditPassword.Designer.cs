@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserEditPassword));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tbPass2 = new System.Windows.Forms.TextBox();
             this.bPassChange = new System.Windows.Forms.Button();
             this.tbPass1 = new System.Windows.Forms.TextBox();
-            this.lStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,6 +48,12 @@
             this.statusStrip1.Size = new System.Drawing.Size(385, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lStatus
+            // 
+            this.lStatus.Name = "lStatus";
+            this.lStatus.Size = new System.Drawing.Size(22, 17);
+            this.lStatus.Text = "     ";
             // 
             // label3
             // 
@@ -92,12 +99,6 @@
             this.tbPass1.Size = new System.Drawing.Size(234, 20);
             this.tbPass1.TabIndex = 4;
             // 
-            // lStatus
-            // 
-            this.lStatus.Name = "lStatus";
-            this.lStatus.Size = new System.Drawing.Size(22, 17);
-            this.lStatus.Text = "     ";
-            // 
             // UserEditPassword
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,6 +110,10 @@
             this.Controls.Add(this.bPassChange);
             this.Controls.Add(this.tbPass1);
             this.Controls.Add(this.statusStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "UserEditPassword";
             this.Text = "UserEdit";
             this.statusStrip1.ResumeLayout(false);
