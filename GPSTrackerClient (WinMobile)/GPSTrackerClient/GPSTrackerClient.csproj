@@ -23,6 +23,7 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
     <NativePlatformName>Windows Mobile 6 Professional SDK</NativePlatformName>
+    <ApplicationIcon>iconmonstr_map_6_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -90,6 +91,9 @@
       <Project>{DB77C1EE-A383-4CD5-A107-1C7C26A9E6B8}</Project>
       <Name>Microsoft.WindowsMobile.Location</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="iconmonstr_map_6_icon.ico" />
   </ItemGroup>
   <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
   <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
