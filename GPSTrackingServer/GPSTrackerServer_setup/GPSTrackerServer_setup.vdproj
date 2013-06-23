@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:GPSTrackerServer_setup"
+"ProjectName" = "8:GPSTrackerServer"
 "LanguageId" = "3:1049"
 "CodePage" = "3:1251"
 "UILanguageId" = "3:1049"
@@ -21,32 +21,26 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_12F0782E7292427557BA10018AE26583"
-        "OwnerKey" = "8:_F9A022E58B3C4FF0A403A7D9271ABD53"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_12F0782E7292427557BA10018AE26583"
+        "MsmKey" = "8:_797787EC1487856FAE0FB760343AF851"
         "OwnerKey" = "8:_0F4314F9FB7644C8A1BB7DD8D3F93CB4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_644A4F518FA9C21D40E7FD9F511566B9"
+        "MsmKey" = "8:_797787EC1487856FAE0FB760343AF851"
         "OwnerKey" = "8:_F9A022E58B3C4FF0A403A7D9271ABD53"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_644A4F518FA9C21D40E7FD9F511566B9"
+        "MsmKey" = "8:_CF60958396CBC809F099D309AF5D28F3"
         "OwnerKey" = "8:_0F4314F9FB7644C8A1BB7DD8D3F93CB4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E70E59ABF81D408EA9AA3D953980C5F7"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_CF60958396CBC809F099D309AF5D28F3"
+        "OwnerKey" = "8:_F9A022E58B3C4FF0A403A7D9271ABD53"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,13 +52,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E70E59ABF81D408EA9AA3D953980C5F7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0F4314F9FB7644C8A1BB7DD8D3F93CB4"
+        "OwnerKey" = "8:_CF60958396CBC809F099D309AF5D28F3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,13 +64,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_12F0782E7292427557BA10018AE26583"
+        "OwnerKey" = "8:_0F4314F9FB7644C8A1BB7DD8D3F93CB4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_644A4F518FA9C21D40E7FD9F511566B9"
+        "OwnerKey" = "8:_797787EC1487856FAE0FB760343AF851"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -103,6 +91,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -119,6 +128,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -148,20 +178,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_12F0782E7292427557BA10018AE26583"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_797787EC1487856FAE0FB760343AF851"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ConfigLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:MySql.Data, Version=6.5.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_12F0782E7292427557BA10018AE26583"
+                    "_797787EC1487856FAE0FB760343AF851"
                     {
-                    "Name" = "8:ConfigLibrary.dll"
+                    "Name" = "8:MySql.Data.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:ConfigLibrary.dll"
+            "SourcePath" = "8:MySql.Data.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E0479DCD83CD491F8AB6D28BD766E355"
@@ -179,20 +209,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_644A4F518FA9C21D40E7FD9F511566B9"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CF60958396CBC809F099D309AF5D28F3"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MySql.Data, Version=6.5.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:ConfigLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_644A4F518FA9C21D40E7FD9F511566B9"
+                    "_CF60958396CBC809F099D309AF5D28F3"
                     {
-                    "Name" = "8:MySql.Data.dll"
+                    "Name" = "8:ConfigLibrary.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:MySql.Data.dll"
+            "SourcePath" = "8:ConfigLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E0479DCD83CD491F8AB6D28BD766E355"
@@ -265,9 +295,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:GPSTrackerServer_setup"
+        "ProductName" = "8:GPSTrackerServer"
         "ProductCode" = "8:{45123E59-BE4C-4AD2-A63A-0E04BFDF86FB}"
-        "PackageCode" = "8:{0EE89A4B-4677-4B23-AF3E-B2C67319C3D6}"
+        "PackageCode" = "8:{B78A07CB-D601-489E-9753-2690E0A4346A}"
         "UpgradeCode" = "8:{AA465CDA-E832-4EA4-885D-803FFC12B97D}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -275,12 +305,12 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Название компании по умолчанию"
+        "Manufacturer" = "8:Masalin A. ISUCT 2013"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:GPSTrackerServer_setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Название компании по умолчанию"
+        "ARPCONTACT" = "8:Masalin A. ISUCT 2013"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -393,12 +423,12 @@
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
+            "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
             "Target" = "8:_0F4314F9FB7644C8A1BB7DD8D3F93CB4"
             "Folder" = "8:_FB1E187500FE4C6FB1C2C213B13E4F92"
             "WorkingFolder" = "8:_E0479DCD83CD491F8AB6D28BD766E355"
-            "Icon" = "8:"
+            "Icon" = "8:_0F4314F9FB7644C8A1BB7DD8D3F93CB4"
             "Feature" = "8:"
             }
         }
@@ -802,7 +832,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0F4314F9FB7644C8A1BB7DD8D3F93CB4"
             {
-            "SourcePath" = "8:..\\ServerConfigurator\\obj\\x86\\Debug\\ServerConfigurator.exe"
+            "SourcePath" = "8:..\\ServerConfigurator\\obj\\x86\\Release\\ServerConfigurator.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E0479DCD83CD491F8AB6D28BD766E355"
@@ -828,37 +858,9 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E70E59ABF81D408EA9AA3D953980C5F7"
-            {
-            "SourcePath" = "8:..\\ConfigLibrary\\obj\\Debug\\ConfigLibrary.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E0479DCD83CD491F8AB6D28BD766E355"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{11BA2D96-207B-42A4-8ECB-A72910AE6584}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F9A022E58B3C4FF0A403A7D9271ABD53"
             {
-            "SourcePath" = "8:..\\GPSTrackingServer\\obj\\Debug\\GPSTrackingServer.exe"
+            "SourcePath" = "8:..\\GPSTrackingServer\\obj\\Release\\GPSTrackingServer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E0479DCD83CD491F8AB6D28BD766E355"

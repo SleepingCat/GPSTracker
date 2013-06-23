@@ -1,5 +1,0 @@
-D:\GPSTracker\GPSTrackingServer\ConfigLibrary\bin\Debug\ConfigLibrary.dll
-D:\GPSTracker\GPSTrackingServer\ConfigLibrary\bin\Debug\ConfigLibrary.pdb
-D:\GPSTracker\GPSTrackingServer\ConfigLibrary\obj\Debug\ConfigLibrary.dll
-D:\GPSTracker\GPSTrackingServer\ConfigLibrary\obj\Debug\ConfigLibrary.pdb
-D:\GPSTracker\GPSTrackingServer\ConfigLibrary\obj\Debug\ConfigLibrary.csprojResolveAssemblyReference.cache
