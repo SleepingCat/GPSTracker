@@ -21,9 +21,9 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("GpsSample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("ISUCT")]
 [assembly: AssemblyProduct("GpsSample")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2005")]
+[assembly: AssemblyCopyright("Copyright © ISUCT 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
